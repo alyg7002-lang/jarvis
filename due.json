@@ -1,1 +1,166 @@
-{ "updated": null, "items": [] }
+{
+  "updated": "2026-10-14T18:29:06+00:00",
+  "items": [
+    {
+      "id": "6629-22182760@kennesaw.view.usg.edu",
+      "item": "Attendance Quiz - Week 8 - Availability Ends",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-10-15T16:20:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22490929@kennesaw.view.usg.edu",
+      "item": "workshop six - Oral History preparation",
+      "course": "American Identities",
+      "due": "2026-10-15T23:59:59-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163059@kennesaw.view.usg.edu",
+      "item": "Present Progressive with estar",
+      "course": "Elementary Spanish I",
+      "due": "2026-10-18T23:59:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163061@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 2 - Preposiciones de lugar- los estados fisicos y emocionales",
+      "course": "Elementary Spanish I",
+      "due": "2026-10-18T23:59:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163062@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 2 - 2.3",
+      "course": "Elementary Spanish I",
+      "due": "2026-10-18T23:59:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22097282@kennesaw.view.usg.edu",
+      "item": "Lab 4 (Group Assignment)",
+      "course": "MATLAB for Engrs wApplication",
+      "due": "2026-10-20T23:59:59-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22182739@kennesaw.view.usg.edu",
+      "item": "Homework - Chapter 5, Problems 4, 10 & 15",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-10-22T14:19:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22123874@kennesaw.view.usg.edu",
+      "item": "Oral History Two - 1976-1996",
+      "course": "American Identities",
+      "due": "2026-10-22T23:59:59-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163063@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 2 Tarea 3 (2.3- 2.4)",
+      "course": "Elementary Spanish I",
+      "due": "2026-10-25T23:59:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163064@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 2 Tarea 4 (Tema II)",
+      "course": "Elementary Spanish I",
+      "due": "2026-10-25T23:59:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163065@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 2 \u2013 Repaso",
+      "course": "Elementary Spanish I",
+      "due": "2026-10-25T23:59:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163066@kennesaw.view.usg.edu",
+      "item": "Examen 2",
+      "course": "Elementary Spanish I",
+      "due": "2026-10-25T23:59:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22097283@kennesaw.view.usg.edu",
+      "item": "Ch 7 Quiz",
+      "course": "MATLAB for Engrs wApplication",
+      "due": "2026-10-25T23:59:59-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22182737@kennesaw.view.usg.edu",
+      "item": "Individual Design Sketches & Description",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-10-29T14:19:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22182738@kennesaw.view.usg.edu",
+      "item": "Team Info",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-10-29T14:19:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22182773@kennesaw.view.usg.edu",
+      "item": "Individual Quiz on Project Requirements",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-10-29T14:19:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22182762@kennesaw.view.usg.edu",
+      "item": "Attendance Quiz - Week 9 - Availability Ends",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-10-29T16:20:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22182741@kennesaw.view.usg.edu",
+      "item": "Homework - Chapter 5, Problems 4, 10 & 15 - Availability Ends",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-11-01T14:19:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163067@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 3 - Tema 1: los quehaceres- los aparatos- la frecuencia",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-01T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163068@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 3 - 3.1",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-01T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163069@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 3 - Expresiones con tener",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-01T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163070@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 3 - 3.2",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-01T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22097280@kennesaw.view.usg.edu",
+      "item": "Ch 6 Quiz",
+      "course": "MATLAB for Engrs wApplication",
+      "due": "2026-11-01T23:59:59-05:00",
+      "allDay": false
+    }
+  ]
+}
