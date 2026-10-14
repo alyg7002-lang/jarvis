@@ -1,0 +1,95 @@
+{
+  "_note": "Rotates one story per day. Read each passage in the NLT. Add more stories in the same shape.",
+  "stories": [
+    {
+      "story": "Joseph and Potiphar's wife",
+      "reference": "Genesis 39",
+      "prayer": "God, give me the strength to do the right thing when nobody's watching.",
+      "q1": "Joseph was a slave with nothing to lose by giving in. Why do you think he still said no?",
+      "q2": "He didn't argue with the temptation. He ran. What's one thing you should run from instead of negotiating with?",
+      "q3": "Joseph did the right thing and still ended up in prison. How do you keep going when doing right costs you?",
+      "action": "Name one temptation you usually negotiate with, and set up one barrier against it today."
+    },
+    {
+      "story": "David and Goliath",
+      "reference": "1 Samuel 17",
+      "prayer": "Lord, help me face today's giants with faith instead of fear.",
+      "q1": "David's confidence came from times God had already helped him. What has God already brought you through?",
+      "q2": "Saul's armor didn't fit David, so he used what he knew. What tools has God already put in your hands?",
+      "q3": "Everyone else saw how big Goliath was. David saw how big God was. What are you staring at too hard right now?",
+      "action": "Do the one task you've been avoiding because it feels too big. Start it before noon."
+    },
+    {
+      "story": "Daniel in the lions' den",
+      "reference": "Daniel 6",
+      "prayer": "God, make me consistent, the same man in private as in public.",
+      "q1": "Daniel's enemies couldn't find anything wrong with him except his faith. What would people find if they looked at your habits?",
+      "q2": "Daniel kept praying three times a day even when it became illegal. What daily habit with God would you protect at any cost?",
+      "q3": "Daniel was excellent at his job. How does doing your schoolwork well connect to your faith?",
+      "action": "Pick a set time to pray tomorrow and put it in your calendar."
+    },
+    {
+      "story": "The prodigal son",
+      "reference": "Luke 15:11-32",
+      "prayer": "Father, thank you for running toward me when I come back.",
+      "q1": "The younger son 'came to his senses.' What usually makes you realize you've drifted?",
+      "q2": "The older brother never left, but he was still far from his father's heart. Where could you be doing the right things with the wrong heart?",
+      "q3": "What does the father running to his son tell you about how God sees your mistakes?",
+      "action": "Reach out to one person you've drifted from: a text, a call, or an apology."
+    },
+    {
+      "story": "Nehemiah rebuilds the wall",
+      "reference": "Nehemiah 4",
+      "prayer": "Lord, help me finish what I start, and keep building even when people mock it.",
+      "q1": "Sanballat mocked the builders. How do you handle people who doubt what you're building?",
+      "q2": "They worked with one hand and held a weapon in the other. What do you need to guard while you build?",
+      "q3": "The wall went up because everyone took their section. What's your section right now?",
+      "action": "Spend 25 minutes building something real (Jarvis, MATLAB, or your trade log) instead of scrolling."
+    },
+    {
+      "story": "Jesus washes the disciples' feet",
+      "reference": "John 13:1-17",
+      "prayer": "Jesus, teach me to lead by serving.",
+      "q1": "Jesus knew he had all authority, and he picked up a towel. What does that say about real strength?",
+      "q2": "Peter tried to refuse. Why is it sometimes harder to receive help than to give it?",
+      "q3": "Who around you needs a 'foot washing,' a humble act nobody would expect from you?",
+      "action": "Do one unasked-for chore or favor for someone at home today, and don't mention it."
+    },
+    {
+      "story": "Peter walks on water",
+      "reference": "Matthew 14:22-33",
+      "prayer": "Lord, keep my eyes on you, not on the waves.",
+      "q1": "Peter was the only one who got out of the boat. What's a 'get out of the boat' step you've been holding back on?",
+      "q2": "He started sinking when he looked at the wind. What 'wind' pulls your focus off God?",
+      "q3": "Jesus caught him immediately. How does that change how you think about failing while trying?",
+      "action": "Take one step on something that scares you a little: ask a question in class, message your uncle, or similar."
+    },
+    {
+      "story": "The Good Samaritan",
+      "reference": "Luke 10:25-37",
+      "prayer": "God, open my eyes to the people I usually walk past.",
+      "q1": "The priest and the Levite had reasons to keep walking. What reasons do you use to avoid getting involved?",
+      "q2": "The hero was someone the listeners looked down on. Who might you be underestimating?",
+      "q3": "The Samaritan paid with time and money. What would it cost you to really help someone this week?",
+      "action": "Notice one person who's struggling today and do something concrete for them."
+    },
+    {
+      "story": "Gideon's small army",
+      "reference": "Judges 7",
+      "prayer": "Lord, I'll trust you even when I feel like I don't have enough.",
+      "q1": "God cut Gideon's army from 32,000 to 300. Why would God make the odds worse on purpose?",
+      "q2": "Gideon needed reassurance more than once, and God gave it. How honest are you with God about your doubts?",
+      "q3": "Where in your life are you waiting to have 'enough' before you start?",
+      "action": "Start something today with what you have now, instead of waiting until you're ready."
+    },
+    {
+      "story": "Jesus is tempted in the wilderness",
+      "reference": "Matthew 4:1-11",
+      "prayer": "Jesus, help me answer temptation the way you did, with truth.",
+      "q1": "The devil came when Jesus was hungry and tired. When are you most vulnerable? Mornings, late nights?",
+      "q2": "Jesus answered every temptation with Scripture. What verse could you keep ready for your weak moments?",
+      "q3": "Each temptation offered a shortcut. What shortcut are you tempted by right now?",
+      "action": "Write one verse on a sticky note and put it where you usually grab your phone."
+    }
+  ]
+}
