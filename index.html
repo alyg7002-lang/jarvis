@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>J.A.R.V.I.S.</title>
+<meta name="description" content="Elijah's voice assistant: schedule, D2L due dates, morning Bible study, screen time.">
+<meta name="theme-color" content="#050b14">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz@9..144&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #050b14; }
+body { padding: 12px; min-height: 100vh; }
+@media (max-width: 520px) { body { padding: 0; } .jv { border-radius: 0; } }
+.jv { --font-anthropic-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; --font-anthropic-serif: "Fraunces", Georgia, serif;
+  --cds-font-size-body: 14px; --cds-font-size-caption: 12px; }
+.jv-stform .jv-input { flex: 1 1 90px; }
+.jv-ask { margin-top: 6px; }
+.jv *, .jv *::before, .jv *::after { box-sizing: border-box; }
+.jv :is(p, li, td, th, h1, h2, span, div, b, strong) { color: inherit; }
+.jv :is(ol, ul) { margin: 0; padding: 0; }
+.jv {
+  --c1: #39e7ff; --c2: #8a6bff; --c3: #ff4fa3; --ok: #41ffa8; --hot: #ff5c6c;
+  --ink: #e8f8ff; --dim: #8fb3c4; --line: rgba(57,231,255,.18); --glass: rgba(10,22,38,.62);
+  --jv-accent: var(--c1);
+  --color-fg: var(--ink); --color-fg-muted: var(--dim); --color-bg: #050b14; --color-panel: var(--glass); --color-border-line: var(--line);
+  --cds-text-secondary: var(--dim); --cds-border: var(--line); --cds-surface-popover: #08131f;
+  color-scheme: dark;
+  position: relative; isolation: isolate; overflow: hidden; box-sizing: border-box;
+  max-width: 1280px; margin-inline: auto; line-height: 1.4;
+  display: grid; gap: 18px; padding: clamp(14px, 3vw, 28px);
+  font-family: var(--font-anthropic-sans); color: var(--ink);
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(57,231,255,.16), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(138,107,255,.18), transparent 60%),
+    radial-gradient(700px 500px at 50% 120%, rgba(255,79,163,.10), transparent 60%),
+    #050b14;
+  border-radius: 18px;
+}
+/* moving grid + scanlines */
+.jv::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(rgba(57,231,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(57,231,255,.07) 1px, transparent 1px);
+  background-size: 44px 44px; opacity: .6;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 70%); mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 70%); }
+.jv::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px); }
+
+.jv-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.jv-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: clamp(28px, 4.5vw, 44px); margin: 0; letter-spacing: .02em;
+  background: linear-gradient(90deg, #fff 0%, var(--c1) 45%, var(--c2) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 14px rgba(57,231,255,.45)); }
+.jv-title small { font-family: var(--font-anthropic-sans); font-size: 12px; letter-spacing: .3em; color: var(--c1); -webkit-text-fill-color: var(--c1); vertical-align: middle; margin-left: 8px; }
+.jv-sub { color: var(--dim); font-size: var(--cds-font-size-body); margin: 6px 0 0; }
+.jv-sub b { color: var(--c1); font-weight: 600; }
+.jv-status { display: flex; flex-wrap: wrap; gap: 8px; }
+.jv-pill { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); border: 1px solid var(--line); background: rgba(5,11,20,.6); border-radius: 999px; padding: 5px 11px; display: inline-flex; align-items: center; gap: 7px; }
+.jv-pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 10px var(--ok); }
+.jv-pill.warn { color: #ffcf6b; border-color: rgba(255,207,107,.35); display: none; }
+.jv-pill.warn i { background: #ffcf6b; box-shadow: 0 0 10px #ffcf6b; }
+.jv-pill.warn.show { display: inline-flex; }
+
+/* cards: glass + HUD corners + pointer glow */
+.jv-card { --mx: 50%; --my: 0%; position: relative; background: var(--glass); backdrop-filter: blur(10px);
+  border: 1px solid var(--line); border-radius: 14px; padding: clamp(14px, 2.4vw, 22px); min-width: 0;
+  box-shadow: 0 0 0 1px rgba(57,231,255,.04) inset, 0 20px 50px -30px rgba(0,0,0,.9);
+  transition: border-color .3s, box-shadow .3s, transform .3s; }
+.jv-card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s;
+  background: radial-gradient(420px circle at var(--mx) var(--my), rgba(57,231,255,.13), transparent 45%); }
+.jv-card::after { content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  background:
+    linear-gradient(var(--c1), var(--c1)) top left / 18px 2px no-repeat, linear-gradient(var(--c1), var(--c1)) top left / 2px 18px no-repeat,
+    linear-gradient(var(--c1), var(--c1)) top right / 18px 2px no-repeat, linear-gradient(var(--c1), var(--c1)) top right / 2px 18px no-repeat,
+    linear-gradient(var(--c2), var(--c2)) bottom left / 18px 2px no-repeat, linear-gradient(var(--c2), var(--c2)) bottom left / 2px 18px no-repeat,
+    linear-gradient(var(--c2), var(--c2)) bottom right / 18px 2px no-repeat, linear-gradient(var(--c2), var(--c2)) bottom right / 2px 18px no-repeat;
+  filter: drop-shadow(0 0 6px rgba(57,231,255,.8)); opacity: .85; }
+.jv-card:hover { border-color: rgba(57,231,255,.45); box-shadow: 0 0 30px -8px rgba(57,231,255,.35), 0 20px 50px -30px #000; }
+.jv-card:hover::before { opacity: 1; }
+.jv-card h2 { font-size: 13px; letter-spacing: .22em; text-transform: uppercase; font-weight: 600; margin: 0; color: var(--c1); text-shadow: 0 0 12px rgba(57,231,255,.6); }
+.jv-note { color: var(--dim); font-size: var(--cds-font-size-caption); margin: 6px 0 14px; }
+.jv-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+
+/* hero */
+.jv-hero { display: grid; gap: 22px; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); align-items: stretch; }
+@media (max-width: 760px) { .jv-hero { grid-template-columns: minmax(0, 1fr); } }
+.jv-orbcol { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.jv-orbwrap { position: relative; display: grid; place-items: center; width: 100%; }
+.jv-orb { width: min(100%, 340px); height: auto; aspect-ratio: 1 / 1; cursor: pointer; display: block; border-radius: 50%; transition: transform .25s cubic-bezier(.2,.9,.3,1.4); }
+.jv-orb:hover { transform: scale(1.03); }
+.jv-orb:active { transform: scale(.97); }
+.jv-orb:focus-visible { outline: 2px solid var(--c1); outline-offset: 6px; }
+.jv-clock { align-self: center; text-align: center; line-height: 1.1; font-family: var(--font-anthropic-serif); font-size: clamp(24px, 3.4vw, 34px); font-variant-numeric: tabular-nums; color: #fff; text-shadow: 0 0 16px rgba(57,231,255,.7); }
+.jv-day { text-align: center; margin: 4px 0 6px; color: var(--dim); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; }
+.jv-state { text-align: center; color: var(--c1); font-size: 11px; letter-spacing: .3em; text-transform: uppercase; margin-top: 6px; min-height: 1.2em; text-shadow: 0 0 10px rgba(57,231,255,.8); }
+.jv[data-mode="listening"] .jv-state { color: var(--c3); text-shadow: 0 0 10px rgba(255,79,163,.9); }
+.jv[data-mode="speaking"] .jv-state { color: #fff; }
+.jv-console { display: flex; flex-direction: column; gap: 10px; min-width: 0; height: 100%; min-height: 360px; }
+.jv-log { flex: 1 1 0; min-height: 160px; overflow: auto; max-height: 300px; display: flex; flex-direction: column; gap: 8px; padding: 4px 6px 4px 0; scrollbar-width: thin; scrollbar-color: rgba(57,231,255,.3) transparent; }
+.jv-msg { max-width: 88%; padding: 9px 12px; border-radius: 12px; font-size: var(--cds-font-size-body); line-height: 1.45; }
+.jv-msg.me { align-self: flex-end; background: linear-gradient(135deg, rgba(138,107,255,.35), rgba(255,79,163,.22)); border: 1px solid rgba(138,107,255,.45); border-bottom-right-radius: 3px; }
+.jv-msg.ai { align-self: flex-start; background: rgba(57,231,255,.07); border: 1px solid var(--line); border-left: 3px solid var(--c1); border-bottom-left-radius: 3px; box-shadow: -6px 0 18px -10px var(--c1); }
+.jv-msg.interim { opacity: .6; font-style: italic; }
+.jv-typing { align-self: flex-start; display: inline-flex; gap: 5px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); }
+.jv-typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--c1); box-shadow: 0 0 8px var(--c1); animation: jvDot 1s infinite ease-in-out; }
+.jv-typing span:nth-child(2) { animation-delay: .15s; } .jv-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes jvDot { 0%, 80%, 100% { transform: translateY(0); opacity: .4; } 40% { transform: translateY(-5px); opacity: 1; } }
+.jv-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.jv-row .jv-input { flex: 1 1 180px; }
+.jv-input { -webkit-appearance: none; appearance: none; margin: 0; flex: 1; min-width: 0; font: inherit; color: var(--ink); background: rgba(5,11,20,.75); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; transition: border-color .2s, box-shadow .2s; }
+.jv-input::placeholder { color: #5e7f8f; }
+.jv-input:focus { outline: none; border-color: var(--c1); box-shadow: 0 0 0 3px rgba(57,231,255,.15), 0 0 20px -4px rgba(57,231,255,.6); }
+.jv-btn { -webkit-appearance: none; appearance: none; line-height: 1.2; margin: 0; position: relative; overflow: hidden; font: inherit; font-size: 12px; letter-spacing: .04em; color: var(--ink); background: rgba(57,231,255,.06); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer; white-space: nowrap;
+  transition: transform .15s, border-color .2s, box-shadow .2s, background .2s; }
+.jv-btn:hover { border-color: var(--c1); background: rgba(57,231,255,.14); box-shadow: 0 0 16px -2px rgba(57,231,255,.55); transform: translateY(-1px); }
+.jv-btn:active { transform: translateY(1px) scale(.97); }
+.jv-btn.primary { color: #021018; font-weight: 600; background: linear-gradient(90deg, var(--c1), #7ff3ff); border-color: transparent; box-shadow: 0 0 22px -4px var(--c1); }
+.jv-btn.primary:hover { box-shadow: 0 0 30px 0 var(--c1); }
+.jv[data-mode="listening"] #mic { background: linear-gradient(90deg, var(--c3), var(--c2)); color: #fff; box-shadow: 0 0 26px 0 var(--c3); animation: jvPulse 1.2s infinite; }
+@keyframes jvPulse { 50% { box-shadow: 0 0 6px 0 var(--c3); } }
+.jv-ripple { position: absolute; border-radius: 50%; transform: scale(0); background: rgba(255,255,255,.45); pointer-events: none; animation: jvRipple .6s ease-out forwards; }
+@keyframes jvRipple { to { transform: scale(4); opacity: 0; } }
+.jv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.jv-settings { display: flex; flex-wrap: wrap; align-items: end; gap: 10px 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+.jv-set { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 150px; }
+.jv-set > span { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+.jv-set em { font-style: normal; color: var(--c1); letter-spacing: 0; }
+.jv-select { -webkit-appearance: none; appearance: none; width: 100%; font: inherit; font-size: 12px; color: var(--ink); background: rgba(5,11,20,.75) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2339e7ff'/%3E%3C/svg%3E") no-repeat right 10px center; border: 1px solid var(--line); border-radius: 10px; padding: 7px 28px 7px 10px; }
+.jv-select option { background: #08131f; color: var(--ink); }
+.jv-set input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--c1), var(--c2)); margin: 9px 0; }
+.jv-set input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px var(--c1); cursor: pointer; }
+.jv-set input[type=range]::-moz-range-thumb { width: 16px; height: 16px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 0 10px var(--c1); cursor: pointer; }
+.jv-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer; user-select: none; padding-bottom: 6px; }
+.jv-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.jv-toggle i { width: 34px; height: 18px; border-radius: 999px; background: rgba(143,179,196,.25); border: 1px solid var(--line); position: relative; transition: background .2s; }
+.jv-toggle i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--dim); transition: transform .2s, background .2s; }
+.jv-toggle input:checked + i { background: rgba(255,79,163,.35); border-color: var(--c3); box-shadow: 0 0 12px -2px var(--c3); }
+.jv-toggle input:checked + i::after { transform: translateX(16px); background: #fff; }
+.jv-toggle input:focus-visible + i { outline: 2px solid var(--c1); outline-offset: 2px; }
+.jv-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.jv-checks li { display: grid; grid-template-columns: 14px 110px minmax(0,1fr); gap: 8px; align-items: start; font-size: 12px; padding: 7px 10px; border-radius: 10px; border: 1px solid var(--line); background: rgba(5,11,20,.55); }
+.jv-checks li::before { content: ""; width: 8px; height: 8px; margin-top: 4px; border-radius: 50%; background: var(--dim); }
+.jv-checks li.ok::before { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+.jv-checks li.bad { border-color: rgba(255,92,108,.5); }
+.jv-checks li.bad::before { background: var(--hot); box-shadow: 0 0 8px var(--hot); }
+.jv-checks li.wait::before { background: #ffcf6b; box-shadow: 0 0 8px #ffcf6b; }
+.jv-checks b { font-weight: 600; color: var(--ink); }
+.jv-checks span { color: var(--dim); }
+@media (max-width: 520px) { .jv-checks li { grid-template-columns: 14px minmax(0,1fr); } .jv-checks li span { grid-column: 2; } }
+.jv-hint { margin: 0; font-size: 11px; color: var(--dim); }
+.jv kbd { font: inherit; font-size: 10px; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--c1); }
+
+/* week */
+.jv-week { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; min-height: 160px; }
+.jv-wday { border: 1px solid var(--line); border-radius: 10px; padding: 8px; display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: rgba(5,11,20,.55); min-width: 0; transition: transform .2s, border-color .2s, box-shadow .2s; }
+.jv-wday:hover { transform: translateY(-3px); border-color: var(--c1); box-shadow: 0 0 18px -6px var(--c1); }
+.jv-wday.today { border-color: var(--c1); box-shadow: 0 0 0 1px var(--c1), 0 0 24px -6px var(--c1); background: rgba(57,231,255,.07); }
+.jv-wday b { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; color: var(--dim); }
+.jv-wday.today b { color: var(--c1); }
+.jv-blk { font-size: 11px; line-height: 1.25; border-radius: 6px; padding: 4px 6px; overflow-wrap: anywhere; }
+.jv-blk.inp { background: linear-gradient(135deg, rgba(57,231,255,.28), rgba(57,231,255,.10)); border: 1px solid rgba(57,231,255,.4); }
+.jv-blk.onl { border: 1px dashed rgba(138,107,255,.55); color: #c9bcff; background: rgba(138,107,255,.08); }
+
+/* tables */
+.jv-table { width: 100%; border-collapse: collapse; background: transparent; font-size: var(--cds-font-size-body); font-variant-numeric: tabular-nums; }
+.jv-table th { position: sticky; top: 0; background: #08131f; z-index: 1; text-align: left; font-weight: 600; color: var(--dim); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; padding: 4px 8px 8px; border-bottom: 1px solid var(--line); }
+.jv-table td { padding: 9px 8px; border-bottom: 1px solid rgba(57,231,255,.08); vertical-align: top; }
+.jv-table tbody tr { transition: background .2s; }
+.jv-table tbody tr:hover { background: rgba(57,231,255,.07); }
+.jv-table tr:last-child td { border-bottom: 0; }
+.jv-empty { color: var(--dim); font-size: var(--cds-font-size-body); display: none; }
+.jv-table td:last-child { white-space: nowrap; }
+.jv-soon { color: var(--hot) !important; text-shadow: 0 0 10px rgba(255,92,108,.7); font-weight: 600; }
+@media (max-width: 520px) { .jv-hide-sm { display: none; } }
+
+/* study */
+.jv-story { font-family: var(--font-anthropic-serif); font-size: clamp(22px, 3vw, 28px); font-weight: 400; margin: 0; color: #fff; text-shadow: 0 0 18px rgba(138,107,255,.6); }
+.jv-ref { color: #c9bcff; margin: 4px 0 16px; letter-spacing: .04em; }
+.jv-steps { list-style: none; padding: 0; margin: 0 0 14px; display: grid; gap: 6px; counter-reset: s; }
+.jv-steps li { position: relative; padding: 8px 12px 8px 38px; border-radius: 10px; border: 1px solid transparent; font-size: var(--cds-font-size-body); transition: all .35s; counter-increment: s; }
+.jv-steps li::before { content: counter(s); position: absolute; left: 10px; top: 9px; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; border: 1px solid var(--line); color: var(--dim); }
+.jv-steps li span.k { display: block; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--dim); }
+.jv-steps li.on { border-color: var(--c2); background: rgba(138,107,255,.12); box-shadow: 0 0 22px -6px var(--c2); }
+.jv-steps li.on::before { background: var(--c2); color: #fff; border-color: var(--c2); box-shadow: 0 0 10px var(--c2); }
+.jv-steps li.past { opacity: .45; }
+.jv-steps li.past::before { content: "✓"; color: var(--ok); border-color: var(--ok); }
+
+/* screen */
+.jv-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr)); gap: 10px; margin-bottom: 14px; }
+.jv-tile { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: rgba(5,11,20,.5); }
+.jv-tile .v { font-family: var(--font-anthropic-serif); font-size: clamp(26px, 3.4vw, 34px); font-weight: 400; font-variant-numeric: tabular-nums; color: #fff; }
+.jv-tile.hot .v { color: var(--c3); text-shadow: 0 0 16px rgba(255,79,163,.7); }
+.jv-tile .l { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+.jv-split { min-height: 70px; position: relative; }
+.jv-split text { fill: var(--dim); }
+.jv-tip { position: absolute; background: #08131f; color: var(--ink); border: 1px solid var(--c1); border-radius: 8px; box-shadow: 0 0 16px -4px var(--c1); padding: 4px 9px; font-size: 12px; pointer-events: none; display: none; white-space: nowrap; }
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .jv::before { animation: jvGrid 18s linear infinite; }
+  @keyframes jvGrid { to { background-position: 0 44px, 44px 0; } }
+  .jv-head, .jv-card { animation: jvIn .7s cubic-bezier(.2,.8,.2,1) both; }
+  .jv-hero { animation-delay: .08s; } #today { animation-delay: .16s; } #due { animation-delay: .22s; } #weekview { animation-delay: .28s; } #study { animation-delay: .34s; } #screen { animation-delay: .4s; }
+  @keyframes jvIn { from { opacity: 0; transform: translateY(14px); filter: blur(4px); } }
+  .jv-msg { animation: jvMsg .35s ease-out both; }
+  @keyframes jvMsg { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+  .jv-pill i { animation: jvBlink 2s infinite; }
+  @keyframes jvBlink { 50% { opacity: .35; } }
+}
+</style>
+</head>
+<body>
+<div class="jv">
+  <div class="jv-head">
+    <div>
+      <h1 class="jv-title" id="title">J.A.R.V.I.S.<small>2.0</small></h1>
+      <p class="jv-sub" id="takeaway">Tap the orb and talk. Try "brief me", "what's due", or "start Bible study".</p>
+    </div>
+    <div class="jv-status"><span class="jv-pill"><i></i>Systems online</span><span class="jv-pill" id="voicePill"><i></i>Voice ready</span><span class="jv-pill" id="d2lPill"><i></i>D2L…</span><span class="jv-pill warn" id="loadPill"><i></i>Load error</span></div>
+  </div>
+
+  <section class="jv-card jv-hero" id="voice">
+    <div class="jv-orbcol">
+      <div class="jv-clock" id="clock">--:--</div>
+      <div class="jv-day" id="dayline"></div>
+      <div class="jv-orbwrap">
+        <canvas class="jv-orb" id="orb" tabindex="0" role="button" aria-label="Talk to Jarvis"></canvas>
+      </div>
+      <div class="jv-state" id="state">Idle · tap to talk</div>
+    </div>
+    <div class="jv-console">
+      <div class="jv-log" id="log" aria-live="polite"></div>
+      <div class="jv-chips" id="chips">
+        <button class="jv-btn" data-say="brief me">Brief me</button>
+        <button class="jv-btn" data-say="what's my schedule today">Today</button>
+        <button class="jv-btn" data-say="what's due">What's due</button>
+        <button class="jv-btn" data-say="start bible study">Bible study</button>
+        <button class="jv-btn" data-say="screen time check">Screen time</button>
+        <button class="jv-btn" data-say="I'm bored">I'm bored</button>
+        <button class="jv-btn" data-say="help">Help</button>
+      </div>
+      <div class="jv-row">
+        <input class="jv-input" id="typed" placeholder="Or type here and hit Enter" autocomplete="off">
+        <button class="jv-btn primary" id="mic">🎙 Talk</button>
+        <button class="jv-btn" id="mute" aria-pressed="false">🔊</button>
+      </div>
+      <div class="jv-settings">
+        <label class="jv-set"><span>Voice</span><select id="voiceSel" class="jv-select" aria-label="Jarvis voice"></select></label>
+        <label class="jv-set"><span>Speed <em id="rateVal">1.00×</em></span><input id="rate" type="range" min="0.8" max="1.4" step="0.05" aria-label="Speaking speed"></label>
+        <label class="jv-toggle"><input type="checkbox" id="hands"><i></i>Hands-free</label>
+        <button class="jv-btn" id="vcheck">🩺 Voice check</button>
+      </div>
+      <ul class="jv-checks" id="checks" hidden></ul>
+      <p class="jv-hint">Tip: press <kbd>Space</kbd> anywhere on the page to talk.</p>
+    </div>
+  </section>
+
+  <div class="jv-grid">
+    <section class="jv-card" id="today">
+      <h2>Today</h2>
+      <p class="jv-note" id="todayNote">Classes and work blocks for today</p>
+      <table class="jv-table" id="todayTable">
+        <thead><tr>
+          <th>Start</th><th class="jv-hide-sm">End</th>
+          <th>Class</th><th>Mode</th><th class="jv-hide-sm">Where</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="jv-empty" id="todayEmpty">No classes today. Good day to build something.</p>
+    </section>
+
+    <section class="jv-card" id="due">
+      <h2>Due next</h2>
+      <p class="jv-note">Synced from D2L every 3 hours · next 3 weeks · red = within 2 days</p>
+      <div style="max-height:340px;overflow:auto">
+      <table class="jv-table" id="dueTable">
+        <thead><tr>
+          <th>Assignment</th><th class="jv-hide-sm">Class</th><th>Due</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+      </div>
+      <p class="jv-empty" id="dueEmpty">Loading…</p>
+    </section>
+  </div>
+
+  <section class="jv-card" id="weekview">
+    <h2>This week</h2>
+    <p class="jv-note">Tap a day and Jarvis reads it out. Solid = in person, dashed = online.</p>
+    <div class="jv-week" id="week"></div>
+  </section>
+
+  <div class="jv-grid">
+    <section class="jv-card" id="study">
+      <h2>Morning Bible study · NLT · ~15 min</h2>
+      <p class="jv-note">Rotates daily through the big stories. Say "next" to move through it.</p>
+      <p class="jv-story" id="story">—</p>
+      <p class="jv-ref" id="ref">—</p>
+      <ol class="jv-steps" id="steps">
+        <li data-step="0"><span class="k">Pray</span><span id="sPrayer">—</span></li>
+        <li data-step="1"><span class="k">Read (NLT)</span><span id="sRead">—</span></li>
+        <li data-step="2"><span class="k">Question 1</span><span id="sQ1">—</span></li>
+        <li data-step="3"><span class="k">Question 2</span><span id="sQ2">—</span></li>
+        <li data-step="4"><span class="k">Question 3</span><span id="sQ3">—</span></li>
+        <li data-step="5"><span class="k">Today's action</span><span id="sAct">—</span></li>
+      </ol>
+      <div class="jv-row">
+        <button class="jv-btn primary" id="studyGo">Start study</button>
+        <button class="jv-btn" id="studyNext">Next</button>
+      </div>
+      <p class="jv-note" style="margin-top:12px">Yesterday's action: <span id="yAct">—</span></p>
+    </section>
+
+    <section class="jv-card" id="screen">
+      <h2>Screen time</h2>
+      <p class="jv-note" id="stWeek">—</p>
+      <div class="jv-tiles">
+        <div class="jv-tile"><div class="v" id="stTotal">—</div><div class="l">hours total</div></div>
+        <div class="jv-tile hot"><div class="v" id="stIg">—</div><div class="l">on Instagram</div></div>
+        <div class="jv-tile"><div class="v" id="stShare">—</div><div class="l">of it Instagram</div></div>
+      </div>
+      <div class="jv-split" id="split"><div class="jv-tip" id="tip"></div></div>
+      <form class="jv-stform" id="stForm">
+        <p class="jv-note" style="margin:12px 0 8px">Log this week (from your phone's Screen Time / Digital Wellbeing):</p>
+        <div class="jv-row">
+          <input class="jv-input" id="stInTotal" type="number" min="0" step="0.5" placeholder="Total hrs" required>
+          <input class="jv-input" id="stInIg" type="number" min="0" step="0.5" placeholder="Instagram" required>
+          <input class="jv-input" id="stInSc" type="number" min="0" step="0.5" placeholder="Snapchat">
+          <button class="jv-btn primary" type="submit">Log week</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const root = document.querySelector('.jv');
+  // ---------- helpers ----------
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const FULL = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday' };
+  const pad = (n) => String(n).padStart(2, '0');
+  const isoToday = () => { const d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+  const todayAbbr = () => DAYS[new Date().getDay()];
+  const enc = encodeURIComponent;
+  const to12 = (hm) => { const [h, m] = String(hm).split(':').map(Number); const ap = h >= 12 ? 'PM' : 'AM'; return ((h + 11) % 12 + 1) + (m ? ':' + pad(m) : '') + ' ' + ap; };
+  const daysUntil = (iso) => { const a = new Date(isoToday() + 'T00:00:00'), b = new Date(iso + 'T00:00:00'); return Math.round((b - a) / 864e5); };
+  const whenWord = (n) => n === 0 ? 'today' : n === 1 ? 'tomorrow' : 'in ' + n + ' days';
+  const dayOfYear = (d = new Date()) => Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5);
+  function resolveColor(c) { const s = document.createElement('span'); s.style.color = c; s.style.display = 'none'; root.appendChild(s); const v = getComputedStyle(s).color; s.remove(); return v; }
+
+  let accent = 'rgb(57,231,255)';
+  let S = { schedule: [], due: [], study: [], screen: [] };
+
+  // ---------- render ----------
+  function cellRow(tbody, values, key) {
+    const tr = document.createElement('tr'); tr.dataset.key = key;
+    values.forEach(([v, cls]) => { const td = document.createElement('td'); td.textContent = v; if (cls) td.className = cls; tr.appendChild(td); });
+    tbody.appendChild(tr); return tr;
+  }
+
+  function todayRows() { return S.schedule.filter(r => r.weekday === todayAbbr()).sort((a, b) => a.start.localeCompare(b.start)); }
+  function openDue() { const now = Date.now(); return S.due.filter(r => (/^\d{4}-\d{2}-\d{2}$/.test(r.due) ? r.due_day >= isoToday() : new Date(r.due).getTime() > now)).sort((a, b) => new Date(a.due) - new Date(b.due)); }
+  function studyFor(offset = 0) {
+    if (!S.study.length) return null;
+    const rows = S.study.slice().sort((a, b) => Number(a.day) - Number(b.day));
+    const i = ((dayOfYear() + offset) % rows.length + rows.length) % rows.length;
+    return rows[i];
+  }
+
+  // ---------- clock ----------
+  function tick() { const d = new Date(); $('clock').textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); $('dayline').textContent = d.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' }); }
+  tick(); setInterval(tick, 15000);
+
+  // ---------- orb ----------
+  const cv = $('orb'), ctx = cv.getContext('2d');
+  let mode = 'idle', level = 0, target = 0;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function sizeOrb() { const r = window.devicePixelRatio || 1, w = cv.clientWidth || 300; cv.width = w * r; cv.height = w * r; ctx.setTransform(r, 0, 0, r, 0, 0); }
+  sizeOrb(); new ResizeObserver(sizeOrb).observe(cv);
+  function rgba(c, a) { const m = c.match(/\d+(\.\d+)?/g) || [80, 170, 255]; return `rgba(${m[0]},${m[1]},${m[2]},${a})`; }
+  const parts = Array.from({ length: 70 }, () => ({ a: Math.random() * 6.283, r: 0.55 + Math.random() * 0.75, s: (Math.random() * 0.6 + 0.2) * (Math.random() < .5 ? -1 : 1), z: Math.random() * 1.6 + 0.4 }));
+  const bars = new Array(96).fill(0);
+  let last = 0, rot = 0;
+  const C1 = [57, 231, 255], C2 = [138, 107, 255], C3 = [255, 79, 163];
+  const col = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+  function frame(t) {
+    const dt = Math.min(50, t - last || 16); last = t;
+    const w = cv.clientWidth, c = w / 2, R = w * 0.25;
+    const sp = reduce ? 0.25 : 1;
+    target = mode === 'speaking' ? 0.5 + 0.5 * Math.abs(Math.sin(t / 85)) * (0.6 + Math.random() * 0.4) : mode === 'listening' ? 0.45 + 0.25 * Math.sin(t / 160) : mode === 'thinking' ? 0.3 : 0.1;
+    level += (target - level) * 0.14;
+    rot += dt * 0.0004 * sp * (1 + level * 4);
+    const main = mode === 'listening' ? C3 : C1;
+    ctx.clearRect(0, 0, w, w);
+    ctx.globalCompositeOperation = 'lighter';
+
+    // halo
+    const g = ctx.createRadialGradient(c, c, R * 0.3, c, c, R * 2);
+    g.addColorStop(0, col(main, 0.22 + level * 0.3)); g.addColorStop(0.5, col(C2, 0.08 + level * 0.1)); g.addColorStop(1, col(main, 0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(c, c, R * 2, 0, 6.283); ctx.fill();
+
+    // radial equalizer bars
+    for (let i = 0; i < bars.length; i++) {
+      const a = (i / bars.length) * 6.283 + rot * 0.5;
+      const want = level * (0.35 + 0.65 * Math.abs(Math.sin(i * 0.7 + t / 140) * Math.cos(i * 0.23 - t / 260))) + 0.04;
+      bars[i] += (want - bars[i]) * 0.25;
+      const r0 = R * 1.28, r1 = r0 + bars[i] * R * 0.55;
+      ctx.strokeStyle = col(i % 2 ? main : C2, 0.35 + bars[i] * 0.6); ctx.lineWidth = 2; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(c + Math.cos(a) * r0, c + Math.sin(a) * r0); ctx.lineTo(c + Math.cos(a) * r1, c + Math.sin(a) * r1); ctx.stroke();
+    }
+
+    // tick ring
+    ctx.save(); ctx.translate(c, c); ctx.rotate(-rot * 0.6);
+    for (let i = 0; i < 60; i++) { const a = i / 60 * 6.283, long = i % 5 === 0; ctx.strokeStyle = col(main, long ? 0.8 : 0.3); ctx.lineWidth = long ? 2 : 1;
+      ctx.beginPath(); ctx.moveTo(Math.cos(a) * R * 1.16, Math.sin(a) * R * 1.16); ctx.lineTo(Math.cos(a) * R * (long ? 1.08 : 1.12), Math.sin(a) * R * (long ? 1.08 : 1.12)); ctx.stroke(); }
+    ctx.restore();
+
+    // segmented arcs (counter-rotating)
+    const arcs = [[0.98, 6, 0.55, 3, main, rot * 1.4], [0.86, 3, 0.9, 2, C2, -rot * 2.1], [0.74, 8, 0.4, 1.5, main, rot * 3]];
+    arcs.forEach(([rr, n, fill, lw, cc, r]) => {
+      for (let i = 0; i < n; i++) { const a0 = r + i / n * 6.283, a1 = a0 + (6.283 / n) * fill;
+        ctx.strokeStyle = col(cc, 0.75); ctx.lineWidth = lw + level * 2; ctx.shadowColor = col(cc, 1); ctx.shadowBlur = 12;
+        ctx.beginPath(); ctx.arc(c, c, R * rr, a0, a1); ctx.stroke(); }
+    });
+    ctx.shadowBlur = 0;
+
+    // particles
+    parts.forEach(p => { p.a += p.s * 0.0015 * dt * sp * (1 + level * 3); const rr = R * (p.r + level * 0.25);
+      const x = c + Math.cos(p.a) * rr, y = c + Math.sin(p.a) * rr;
+      ctx.fillStyle = col(p.s > 0 ? main : C2, 0.5 + level * 0.4); ctx.beginPath(); ctx.arc(x, y, p.z * (1 + level), 0, 6.283); ctx.fill(); });
+
+    // reactor core
+    const cr = R * (0.46 + level * 0.14);
+    const core = ctx.createRadialGradient(c, c, 0, c, c, cr * 1.4);
+    core.addColorStop(0, 'rgba(255,255,255,0.95)'); core.addColorStop(0.35, col(main, 0.9)); core.addColorStop(1, col(main, 0));
+    ctx.fillStyle = core; ctx.beginPath(); ctx.arc(c, c, cr * 1.4, 0, 6.283); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1.5;
+    ctx.save(); ctx.translate(c, c); ctx.rotate(rot * 2);
+    ctx.beginPath(); for (let i = 0; i <= 3; i++) { const a = i / 3 * 6.283 - 1.5708; const x = Math.cos(a) * cr * 0.55, y = Math.sin(a) * cr * 0.55; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke();
+    ctx.restore();
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  function setMode(m, label) { mode = m; root.dataset.mode = m; showTyping(m === 'thinking'); $('state').textContent = label || { idle: 'Idle · tap to talk', listening: 'Listening…', thinking: 'Thinking…', speaking: 'Speaking · tap to stop' }[m]; }
+
+  // ---------- speech out ----------
+  const store = { get(k, d) { try { const v = localStorage.getItem('jv.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem('jv.' + k, JSON.stringify(v)); } catch (e) {} } };
+  let muted = false, voice = null, rate = store.get('rate', 1.0), handsFree = store.get('hands', false);
+  let speakerOk = null, micOk = null, speakToken = 0, keepAlive = null;
+  const synth = window.speechSynthesis;
+  const VOICE_PREF = [/Microsoft (Andrew|Brian|Guy|Christopher|Eric|Davis|Steffan).*Natural/i, /Microsoft .*Natural.*English/i, /Google UK English Male/i, /^Daniel/i, /Google US English/i, /Microsoft (Guy|Mark|David)/i, /^(Alex|Aaron|Evan|Tom)/i];
+  function englishVoices() { return synth ? synth.getVoices().filter(v => /^en/i.test(v.lang)) : []; }
+  function pickVoice() {
+    const vs = englishVoices(); if (!vs.length) return;
+    const saved = store.get('voice', null);
+    voice = (saved && vs.find(v => v.name === saved)) || VOICE_PREF.map(re => vs.find(v => re.test(v.name))).find(Boolean) || vs[0];
+    const sel = $('voiceSel'); sel.textContent = '';
+    vs.slice().sort((a, b) => (/Natural/.test(b.name) - /Natural/.test(a.name)) || a.name.localeCompare(b.name)).forEach(v => {
+      const o = new Option(v.name.replace(/^Microsoft /, '').replace(/ - English.*$/, '').replace(/Online \(Natural\)/, '★ natural') + ' · ' + v.lang, v.name);
+      if (voice && v.name === voice.name) o.selected = true; sel.appendChild(o);
+    });
+  }
+  if (synth) { pickVoice(); synth.addEventListener('voiceschanged', pickVoice); setTimeout(pickVoice, 600); setTimeout(pickVoice, 2000); }
+  $('voiceSel').addEventListener('change', (e) => { voice = englishVoices().find(v => v.name === e.target.value) || voice; store.set('voice', voice && voice.name); say('This is my new voice.'); });
+  $('rate').value = rate; $('rateVal').textContent = rate.toFixed(2) + '×';
+  $('rate').addEventListener('input', (e) => { rate = Number(e.target.value); $('rateVal').textContent = rate.toFixed(2) + '×'; store.set('rate', rate); });
+  $('hands').checked = handsFree;
+  $('hands').addEventListener('change', (e) => { handsFree = e.target.checked; store.set('hands', handsFree); log('ai', handsFree ? 'Hands-free on. After I finish talking I start listening again. Say "stop" to end it.' : 'Hands-free off.'); });
+
+  // Chrome cuts off long speech, so speak one sentence-sized chunk at a time.
+  function chunks(text) {
+    const clean = text.replace(/(\d+):(\d+)/g, '$1 $2').replace(/\s+/g, ' ').trim();
+    const parts = clean.match(/[^.!?;]+[.!?;]*["”']?\s*/g) || [clean];
+    const out = []; let cur = '';
+    parts.forEach(p => { if ((cur + p).length > 180 && cur) { out.push(cur.trim()); cur = p; } else cur += p; });
+    if (cur.trim()) out.push(cur.trim());
+    return out;
+  }
+  function say(text, opts = {}) {
+    if (!opts.silentLog) log('ai', text);
+    if (muted || !synth) { setMode('idle'); return Promise.resolve(false); }
+    synth.cancel(); clearInterval(keepAlive);
+    const token = ++speakToken, list = chunks(text);
+    let started = false;
+    return new Promise((resolve) => {
+      const done = (ok) => { if (token !== speakToken) return resolve(false); clearInterval(keepAlive); setMode('idle'); resolve(ok); if (ok && handsFree && !opts.noRelisten) setTimeout(() => { if (mode === 'idle' && token === speakToken) listen(); }, 450); };
+      list.forEach((piece, i) => {
+        const u = new SpeechSynthesisUtterance(piece);
+        if (voice) { u.voice = voice; u.lang = voice.lang; } u.rate = rate; u.pitch = 1;
+        u.onstart = () => { if (token !== speakToken) return; started = true; speakerOk = true; setMode('speaking'); };
+        u.onend = () => { if (i === list.length - 1) done(true); };
+        u.onerror = (e) => { if (e.error === 'interrupted' || e.error === 'canceled') return; if (i === list.length - 1 || e.error === 'not-allowed') done(false); };
+        synth.speak(u);
+      });
+      // Chrome's Google voices stall after ~15 s unless nudged.
+      if (voice && !voice.localService) keepAlive = setInterval(() => { if (synth.speaking && !synth.paused) { synth.pause(); synth.resume(); } }, 9000);
+      setTimeout(() => {
+        if (token === speakToken && !started) {
+          speakerOk = false; clearInterval(keepAlive);
+          if (!opts.quietFail) log('ai', "(I'm not making any sound. Check your volume and output device, then run Voice check.)");
+          done(false);
+        }
+      }, 3500);
+    });
+  }
+  function hush() { speakToken++; clearInterval(keepAlive); if (synth) synth.cancel(); setMode('idle'); }
+  $('mute').addEventListener('click', () => { muted = !muted; $('mute').textContent = muted ? '🔇' : '🔊'; $('mute').setAttribute('aria-pressed', muted); if (muted) hush(); });
+
+  // ---------- log ----------
+  let interimEl = null;
+  function log(who, text, interim) {
+    if (who === 'ai') showTyping(false);
+    if (interim) { if (!interimEl) { interimEl = document.createElement('div'); interimEl.className = 'jv-msg me interim'; $('log').appendChild(interimEl); } interimEl.textContent = text; }
+    else { if (interimEl && who === 'me') { interimEl.remove(); } interimEl = null; const m = document.createElement('div'); m.className = 'jv-msg ' + who; m.textContent = text; $('log').appendChild(m); }
+    $('log').scrollTop = $('log').scrollHeight;
+  }
+
+  let typingEl = null;
+  function showTyping(on) {
+    if (on && !typingEl) { typingEl = document.createElement('div'); typingEl.className = 'jv-typing'; typingEl.innerHTML = '<span></span><span></span><span></span>'; $('log').appendChild(typingEl); $('log').scrollTop = $('log').scrollHeight; }
+    if (!on && typingEl) { typingEl.remove(); typingEl = null; }
+  }
+  root.addEventListener('pointerdown', (e) => {
+    const b = e.target.closest('.jv-btn'); if (!b) return;
+    const r = b.getBoundingClientRect(), d = Math.max(r.width, r.height), sp = document.createElement('span');
+    sp.className = 'jv-ripple'; sp.style.width = sp.style.height = d + 'px'; sp.style.left = (e.clientX - r.left - d / 2) + 'px'; sp.style.top = (e.clientY - r.top - d / 2) + 'px';
+    b.appendChild(sp); setTimeout(() => sp.remove(), 650);
+  });
+  root.addEventListener('pointermove', (e) => {
+    const card = e.target.closest('.jv-card'); if (!card) return;
+    const r = card.getBoundingClientRect(); card.style.setProperty('--mx', (e.clientX - r.left) + 'px'); card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
+
+  // ---------- speech in ----------
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const inFrame = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
+  let rec = null, listening = false;
+  const MIC_WHY = {
+    'not-allowed': inFrame ? "The browser won't let me use your mic inside Claude's page. Open the page in its own tab, or use Claude's voice mode to talk." : 'Mic permission is off. Click the lock icon by the address bar, set Microphone to Allow, then reload.',
+    'service-not-allowed': "Your browser's speech service is turned off or blocked here. Use Edge or Chrome, or type for now.",
+    'audio-capture': 'No microphone found, or another app (Zoom, Discord, Teams) is using it. Close that app, or pick the right mic in Windows sound settings.',
+    'network': "The browser couldn't reach its speech service. Check your internet and try again.",
+    'no-speech': "I didn't hear anything. Get closer to the mic, or check that the right mic is selected in Windows.",
+    'language-not-supported': "This browser doesn't support English speech recognition here."
+  };
+  function setVoicePill(text, bad) { const vp = $('voicePill'); vp.lastChild.textContent = text; vp.classList.toggle('warn', !!bad); vp.classList.toggle('show', true); }
+  if (!SR) setVoicePill('Voice: type mode', true);
+
+  function recognizeOnce({ onInterim, onFinal, onError, onEnd }) {
+    const r = new SR(); r.lang = 'en-US'; r.interimResults = true; r.continuous = false; r.maxAlternatives = 1;
+    let gotFinal = false;
+    r.onresult = (e) => { let txt = '', fin = false; for (let i = e.resultIndex; i < e.results.length; i++) { txt += e.results[i][0].transcript; if (e.results[i].isFinal) fin = true; } if (fin) { gotFinal = true; onFinal(txt.trim()); } else onInterim && onInterim(txt); };
+    r.onerror = (e) => onError(e.error);
+    r.onend = () => onEnd && onEnd(gotFinal);
+    r.start();
+    return r;
+  }
+  function listen() {
+    if (mode === 'speaking') { hush(); return; }
+    if (!SR) { log('ai', "This browser can't hear you. Edge or Chrome on your laptop works best. Type or tap a button for now."); $('typed').focus(); return; }
+    if (listening) { rec && rec.stop(); return; }
+    if (synth) synth.cancel();
+    try {
+      listening = true; setMode('listening'); $('mic').textContent = '■ Stop';
+      rec = recognizeOnce({
+        onInterim: (t) => log('me', t, true),
+        onFinal: (t) => { micOk = true; setVoicePill('Voice ready'); handle(t); },
+        onError: (code) => {
+          if (code === 'aborted') return;
+          if (code !== 'no-speech') { micOk = false; setVoicePill('Mic blocked', true); }
+          if (code === 'no-speech' && handsFree) { log('ai', 'Hands-free paused. Tap the orb when you need me.'); return; }
+          log('ai', MIC_WHY[code] || ('Mic error: ' + code + '. Type for now.'));
+        },
+        onEnd: () => { listening = false; $('mic').textContent = '🎙 Talk'; if (mode === 'listening') setMode('idle'); if (interimEl) { interimEl.remove(); interimEl = null; } }
+      });
+    } catch (err) { listening = false; setMode('idle'); $('mic').textContent = '🎙 Talk'; log('ai', 'Could not start the mic: ' + err.message); }
+  }
+
+  // ---------- voice check ----------
+  async function micPermission() { try { const p = await navigator.permissions.query({ name: 'microphone' }); return p.state; } catch (e) { return 'unknown'; } }
+  function checkRow(ok, label, detail) {
+    const li = document.createElement('li'); li.className = ok === true ? 'ok' : ok === false ? 'bad' : 'wait';
+    const b = document.createElement('b'); b.textContent = label; li.appendChild(b);
+    const s = document.createElement('span'); s.textContent = detail; li.appendChild(s);
+    $('checks').appendChild(li); return li;
+  }
+  async function voiceCheck() {
+    hush(); const box = $('checks'); box.hidden = false; box.textContent = '';
+    const ua = navigator.userAgent, browser = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Unknown';
+    checkRow(true, 'Browser', browser + (inFrame ? ' · page is inside Claude' : ' · own tab'));
+    const vs = englishVoices();
+    checkRow(!!synth && vs.length > 0, 'Voices', synth ? vs.length + ' English voices · using ' + (voice ? voice.name : 'none') : 'Speech output not supported');
+    const spk = checkRow(null, 'Speaker', 'Playing a test line…');
+    const heard = await say('Speaker check. If you can hear me, my voice is working.', { silentLog: true, noRelisten: true, quietFail: true });
+    spk.className = heard ? 'ok' : 'bad'; spk.lastChild.textContent = heard ? 'Speech played. If you heard nothing, your volume or output device is the problem, not me.' : 'The browser never started speaking. Turn volume up, check the output device, then reload.';
+    if (!SR) { checkRow(false, 'Mic', 'Speech recognition not supported in ' + browser + '. Use Edge or Chrome.'); return finishCheck(); }
+    const perm = await micPermission();
+    checkRow(perm === 'granted' ? true : perm === 'denied' ? false : null, 'Mic permission', perm === 'unknown' ? "Can't read it here; the test below will tell." : perm);
+    const mic = checkRow(null, 'Mic', 'Say "testing" now…');
+    setMode('listening');
+    await new Promise((res) => {
+      let settled = false; const fin = (ok, msg) => { if (settled) return; settled = true; mic.className = ok ? 'ok' : 'bad'; mic.lastChild.textContent = msg; micOk = ok; setMode('idle'); res(); };
+      try {
+        const r = recognizeOnce({ onInterim: (t) => { mic.lastChild.textContent = 'Hearing: ' + t; }, onFinal: (t) => fin(true, 'Heard you: "' + t + '"'), onError: (c) => fin(c === 'no-speech' ? null : false, MIC_WHY[c] || ('Error: ' + c)), onEnd: () => fin(false, 'Stopped without hearing anything.') });
+        setTimeout(() => { try { r.stop(); } catch (e) {} }, 8000);
+      } catch (e) { fin(false, 'Could not start: ' + e.message); }
+    });
+    finishCheck();
+  }
+  function finishCheck() {
+    setVoicePill(micOk ? 'Voice ready' : SR ? 'Mic blocked' : 'Voice: type mode', !micOk);
+    const msg = speakerOk && micOk ? 'All good. Talk away.' : speakerOk && !micOk ? 'I can talk but not hear you here. Fix the red line above, or type to me.' : !speakerOk && micOk ? 'I can hear you but no sound is coming out. Check volume and output device.' : 'Voice is blocked both ways here. The red lines above say why.';
+    say(msg, { noRelisten: true, quietFail: true });
+  }
+  $('vcheck').addEventListener('click', voiceCheck);
+
+  // ---------- inputs ----------
+  cv.addEventListener('click', listen);
+  cv.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); listen(); } });
+  $('mic').addEventListener('click', listen);
+  document.addEventListener('keydown', (e) => {
+    if (e.code !== 'Space' || e.repeat) return;
+    const t = e.target; if (t && (t.closest('input, textarea, select, button, [contenteditable]') || t === cv)) return;
+    if (!root.contains(t) && t !== document.body) return;
+    e.preventDefault(); listen();
+  });
+  $('typed').addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.value.trim()) { handle(e.target.value.trim()); e.target.value = ''; } });
+  $('chips').addEventListener('click', (e) => { const b = e.target.closest('[data-say]'); if (b) handle(b.dataset.say); });
+
+  // ---------- brain (local rules) ----------
+  let studyStep = -1, lastRaw = '';
+  // Anything the rules don't cover gets handed to Claude in a new tab.
+  // (A real AI brain here would need a paid API key and a small server to hide it.)
+  function askClaude(q) {
+    say("That one's outside what I can answer on my own. Tap the button to ask Claude.", { noRelisten: true });
+    const a = document.createElement('a');
+    a.className = 'jv-btn jv-ask'; a.textContent = 'Ask Claude: "' + (q.length > 40 ? q.slice(0, 40) + '…' : q) + '"';
+    a.href = 'https://claude.ai/new?q=' + encodeURIComponent(q); a.target = '_blank'; a.rel = 'noopener';
+    $('log').appendChild(a); $('log').scrollTop = $('log').scrollHeight;
+  }
+  function scheduleLine(dayAbbr) {
+    const rows = S.schedule.filter(r => r.weekday === dayAbbr).sort((a, b) => a.start.localeCompare(b.start));
+    const name = dayAbbr === todayAbbr() ? 'today' : 'on ' + FULL[dayAbbr];
+    if (!rows.length) return 'Nothing on the schedule ' + name + '.';
+    return 'You have ' + rows.length + (rows.length === 1 ? ' block ' : ' blocks ') + name + ': ' + rows.map(r => r.course + ' at ' + to12(r.start) + (r.mode === 'In person' ? (r.where ? ' in ' + r.where : ', in person') : ', online')).join('; ') + '.';
+  }
+  function dueLine(n = 3) {
+    const od = openDue(); if (!od.length) return (dueUpdated ? "Nothing due in the next three weeks on D2L. Double-check Pulse anyway." : "I don't have your D2L due dates yet. The sync isn't set up.");
+    const soon = od.slice(0, n).map(r => r.item + (r.course ? ' for ' + r.course : '') + ', due ' + whenWord(daysUntil(r.due_day)) + (!r.allDay ? ' at ' + new Date(r.due).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : ''));
+    return od.length + ' things due in the next three weeks. Soonest: ' + soon.join('; ') + '.';
+  }
+  function studySay(step) {
+    const s = studyFor(0); if (!s) return say("Your study plan didn't load.");
+    highlightStep(step);
+    const lines = [
+      () => { const y = studyFor(-1); return "Let's go. Today's story is " + s.story + '. Quick check-in first: yesterday\'s action was "' + y.action + '" Did you do it? Be honest with yourself. Now pray with me: ' + s.prayer + ' Amen. Say next when you\'re ready.'; },
+      () => 'Open the NLT to ' + s.reference + '. Read it slow, out loud if you can. Say next when you\'re done.',
+      () => 'Question one. ' + s.q1 + ' Think on it, then say next.',
+      () => 'Question two. ' + s.q2,
+      () => 'Question three. ' + s.q3,
+      () => "Your action for today: " + s.action + " I'll ask about it tomorrow.",
+    ];
+    if (step >= lines.length) { studyStep = -1; highlightStep(-1); return say("That's the study. Go be the man God made you to be today."); }
+    say(lines[step]());
+  }
+  function highlightStep(step) { document.querySelectorAll('#steps li').forEach(li => { const n = Number(li.dataset.step); li.classList.toggle('on', n === step); li.classList.toggle('past', step >= 0 && n < step); }); }
+  $('studyGo').addEventListener('click', () => handle('start bible study'));
+  $('studyNext').addEventListener('click', () => handle('next'));
+
+  function handle(raw) {
+    lastRaw = raw;
+    log('me', raw);
+    const t = raw.toLowerCase();
+    setMode('thinking');
+    setTimeout(() => respond(t), 450);
+  }
+  function respond(t) {
+    if (/\b(stop|quiet|shut up|cancel|that's all|goodbye|bye)\b/.test(t)) { hush(); studyStep = -1; highlightStep(-1); if (handsFree) { handsFree = false; $('hands').checked = false; store.set('hands', false); log('ai', 'Hands-free off.'); } return; }
+    if (studyStep >= 0 && /\b(next|continue|go on|done|ready|okay|ok|yes|yeah|no)\b/.test(t)) { studyStep++; return studySay(studyStep); }
+    if (/bible|study|devotion|scripture|pray/.test(t)) { studyStep = 0; return studySay(0); }
+    const dayHit = Object.entries(FULL).find(([, f]) => t.includes(f.toLowerCase()));
+    if (dayHit && /schedule|class|what/.test(t)) return say(scheduleLine(dayHit[0]));
+    if (/tomorrow/.test(t) && /schedule|class|what/.test(t)) return say(scheduleLine(DAYS[(new Date().getDay() + 1) % 7]));
+    if (/brief|morning|my day|rundown/.test(t)) {
+      const d = new Date();
+      return say('It\'s ' + d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + ' on ' + d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }) + '. ' + scheduleLine(todayAbbr()) + ' ' + dueLine(2) + ' Want to start Bible study? Just say "Bible study".');
+    }
+    if (/schedule|class|today/.test(t)) return say(scheduleLine(todayAbbr()));
+    if (/due|assignment|homework|deadline|quiz|exam|test/.test(t)) return say(dueLine(3));
+    if (/screen|phone|instagram|insta|snap|scroll/.test(t)) {
+      const base = S.screen.find(x => x.week === 'baseline'), r = S.screen[S.screen.length - 1];
+      if (!r) return say('No screen time logged yet.');
+      if (r === base) return say('Baseline week: ' + r.total_hours + ' hours on your phone, ' + r.instagram_hours + ' of it Instagram and ' + r.snapchat_hours + ' Snapchat. That\'s nearly a part-time job. Mornings and late nights are the leak. Log this week in the screen time card so we can see if it\'s dropping.');
+      const diff = base.total_hours - r.total_hours;
+      return say('Last logged week: ' + r.total_hours + ' hours, ' + r.instagram_hours + ' on Instagram. ' + (diff > 0 ? 'That\'s ' + diff + ' hours under your baseline. Keep it moving.' : 'That\'s not under your ' + base.total_hours + '-hour baseline yet. Phone charges outside your room tonight.'));
+    }
+    if (/bored|nothing to do|build|project/.test(t)) return say("Don't open Instagram. Pick one: add a new voice command to me, practice one MATLAB problem, or log five backtested opening-range trades. Twenty-five minutes, then come back and tell me what you finished.");
+    if (/time|date|day is it/.test(t)) { const d = new Date(); return say('It\'s ' + d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + ', ' + d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }) + '.'); }
+    if (/^(hi|hey|hello|yo|sup|jarvis)\b/.test(t)) return say("Hey Elijah. What do you need? Schedule, due dates, Bible study, or a screen time check.");
+    if (/help|what can you|commands/.test(t)) return say('Try: brief me, what\'s today, what\'s on Thursday, what\'s due, start Bible study, screen time check, or I\'m bored. Press space to talk, or turn on hands-free.');
+    askClaude(lastRaw);
+  }
+
+
+  // ---------- data ----------
+  // Everything Jarvis knows comes from small JSON files next to this page.
+  // due.json is rewritten every few hours by the GitHub Action (scripts/fetch_due.py).
+  async function getJSON(path) {
+    const r = await fetch(path + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error(path + ' returned ' + r.status);
+    return r.json();
+  }
+  let dueUpdated = null, loadErrors = [];
+  async function loadAll() {
+    loadErrors = [];
+    const [sch, due, st, sc] = await Promise.all(['data/schedule.json', 'due.json', 'data/study.json', 'data/screentime.json']
+      .map(p => getJSON(p).catch(e => { loadErrors.push(p); console.warn(e); return null; })));
+    S.schedule = sch ? sch.classes || [] : [];
+    S.study = st ? st.stories || [] : [];
+    S.screen = (sc ? sc.weeks || [] : []).concat(store.get('screenWeeks', []));
+    dueUpdated = due && due.updated ? new Date(due.updated) : null;
+    S.due = due ? (due.items || []).map(r => {
+      const d = new Date(r.due);
+      return {
+        id: r.id, item: r.item, course: r.course || '', due: r.due,
+        due_day: d.toLocaleDateString('en-CA', { timeZone: 'America/New_York' }),
+        due_local: d.toLocaleString('en-US', r.allDay
+          ? { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric' }
+          : { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }),
+        allDay: !!r.allDay
+      };
+    }) : [];
+    render();
+  }
+
+  function ago(d) {
+    const m = Math.round((Date.now() - d.getTime()) / 60000);
+    return m < 2 ? 'just now' : m < 60 ? m + ' min ago' : m < 48 * 60 ? Math.round(m / 60) + 'h ago' : Math.round(m / 1440) + ' days ago';
+  }
+
+  function render() {
+    // status pill for the D2L sync
+    const dp = $('d2lPill');
+    if (!dueUpdated) { dp.lastChild.textContent = 'D2L not synced yet'; dp.classList.add('warn', 'show'); }
+    else { const stale = Date.now() - dueUpdated.getTime() > 12 * 3600e3; dp.lastChild.textContent = 'D2L synced ' + ago(dueUpdated); dp.classList.toggle('warn', stale); dp.classList.add('show'); }
+    $('loadPill').classList.toggle('show', loadErrors.length > 0);
+    if (loadErrors.length) $('loadPill').lastChild.textContent = "Couldn't load " + loadErrors.join(', ');
+
+    // today
+    const tb = $('todayTable').querySelector('tbody'); tb.textContent = '';
+    const tr = todayRows();
+    tr.forEach(r => cellRow(tb, [[to12(r.start)], [to12(r.end), 'jv-hide-sm'], [r.course], [r.mode], [r.where || '—', 'jv-hide-sm']], r.weekday + r.course));
+    $('todayTable').style.display = tr.length ? '' : 'none';
+    $('todayEmpty').style.display = tr.length ? 'none' : 'block';
+    $('todayNote').textContent = FULL[todayAbbr()] + ' · classes and work blocks';
+
+    // due
+    const db = $('dueTable').querySelector('tbody'); db.textContent = '';
+    const od = openDue();
+    od.forEach(r => cellRow(db, [[r.item], [r.course, 'jv-hide-sm'], [r.due_local, daysUntil(r.due_day) <= 2 ? 'jv-soon' : '']], r.id));
+    $('dueTable').style.display = od.length ? '' : 'none';
+    $('dueEmpty').style.display = od.length ? 'none' : 'block';
+    $('dueEmpty').textContent = dueUpdated ? 'Nothing open. Double-check Pulse anyway.' : 'No due dates yet. Finish the D2L sync setup in the README.';
+
+    // takeaway
+    const tk = $('takeaway');
+    if (od.length) {
+      tk.textContent = 'Next up: ';
+      const b = document.createElement('b'); b.textContent = od[0].item;
+      tk.appendChild(b); tk.appendChild(document.createTextNode((od[0].course ? ' (' + od[0].course + ')' : '') + ', due ' + whenWord(daysUntil(od[0].due_day)) + '. Tap the orb to talk.'));
+    }
+
+    // week
+    const wk = $('week'); wk.textContent = '';
+    ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].forEach(d => {
+      const col = document.createElement('div'); col.className = 'jv-wday' + (d === todayAbbr() ? ' today' : '');
+      const h = document.createElement('b'); h.textContent = d; col.appendChild(h);
+      S.schedule.filter(r => r.weekday === d).sort((a, b) => a.start.localeCompare(b.start)).forEach(r => {
+        const blk = document.createElement('div'); blk.className = 'jv-blk ' + (r.mode === 'Online' ? 'onl' : 'inp');
+        blk.textContent = to12(r.start) + ' ' + r.course; col.appendChild(blk);
+      });
+      col.addEventListener('click', () => handle('schedule for ' + FULL[d]));
+      wk.appendChild(col);
+    });
+
+    // study
+    const s = studyFor(0), y = studyFor(-1);
+    const setF = (id, field, row) => { $(id).textContent = row ? row[field] : '—'; };
+    setF('story', 'story', s); setF('ref', 'reference', s); setF('sPrayer', 'prayer', s); setF('sRead', 'reference', s);
+    setF('sQ1', 'q1', s); setF('sQ2', 'q2', s); setF('sQ3', 'q3', s); setF('sAct', 'action', s); setF('yAct', 'action', y);
+
+    // screen time: latest logged week vs baseline
+    const base = S.screen.find(x => x.week === 'baseline'), latest = S.screen[S.screen.length - 1];
+    const shown = latest || base;
+    $('stTotal').textContent = shown ? shown.total_hours + 'h' : '—';
+    $('stIg').textContent = shown ? shown.instagram_hours + 'h' : '—';
+    $('stShare').textContent = shown && shown.total_hours ? Math.round(100 * shown.instagram_hours / shown.total_hours) + '%' : '—';
+    $('stWeek').textContent = shown ? (shown.week === 'baseline' ? 'Baseline week' : 'Week of ' + shown.week) + (base && shown !== base ? ' · baseline was ' + base.total_hours + 'h' : '') : '';
+    drawSplit(shown);
+  }
+
+  function drawSplit(r) {
+    const box = $('split'), tip = $('tip');
+    box.querySelectorAll('svg').forEach(n => n.remove());
+    if (!r) return;
+    const t = Number(r.total_hours), ig = Number(r.instagram_hours), sc = Number(r.snapchat_hours || 0);
+    const rows = [{ app: 'Instagram', hours: ig }, { app: 'Snapchat', hours: sc }, { app: 'Everything else', hours: Math.max(0, t - ig - sc) }];
+    const W = Math.max(240, box.clientWidth), H = 64, total = rows.reduce((a, x) => a + x.hours, 0) || 1;
+    const cols = ['#39e7ff', '#ff4fa3', '#3a5566'], NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('width', '100%'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    let acc = 0;
+    rows.forEach((row, i) => {
+      const x0 = acc / total * W, w = Math.max(0, row.hours / total * W - 2); acc += row.hours;
+      const rect = document.createElementNS(NS, 'rect');
+      Object.entries({ x: x0, y: 4, width: w, height: 24, rx: 6, fill: cols[i] }).forEach(([k, v]) => rect.setAttribute(k, v));
+      if (i < 2) rect.style.filter = `drop-shadow(0 0 6px ${cols[i]})`;
+      rect.addEventListener('mousemove', (ev) => { tip.style.display = 'block'; tip.textContent = row.app + ': ' + row.hours + 'h'; const b = box.getBoundingClientRect(); tip.style.left = Math.min(ev.clientX - b.left + 10, b.width - 120) + 'px'; tip.style.top = '34px'; });
+      rect.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+      svg.appendChild(rect);
+      if (w > 70) { const tx = document.createElementNS(NS, 'text'); tx.setAttribute('x', x0); tx.setAttribute('y', 48); tx.setAttribute('font-size', 12); tx.textContent = row.app + ' ' + row.hours + 'h'; svg.appendChild(tx); }
+    });
+    box.insertBefore(svg, tip);
+  }
+  new ResizeObserver(() => drawSplit(S.screen[S.screen.length - 1])).observe($('split'));
+
+  // log a new week of screen time (saved in this browser only)
+  $('stForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const t = Number($('stInTotal').value), ig = Number($('stInIg').value), sc = Number($('stInSc').value || 0);
+    if (!(t > 0) || ig < 0 || ig + sc > t) { log('ai', 'Those numbers don\'t add up. Instagram plus Snapchat can\'t be more than the total.'); return; }
+    const weeks = store.get('screenWeeks', []);
+    weeks.push({ week: isoToday(), total_hours: t, instagram_hours: ig, snapchat_hours: sc });
+    store.set('screenWeeks', weeks);
+    e.target.reset();
+    S.screen.push(weeks[weeks.length - 1]);
+    render();
+    const base = S.screen.find(x => x.week === 'baseline');
+    say(base ? (t < base.total_hours ? 'Logged. That\'s ' + (base.total_hours - t) + ' hours less than your baseline. Keep going.' : 'Logged. That\'s not below your baseline of ' + base.total_hours + ' hours. Phone charges outside your room tonight.') : 'Logged.');
+  });
+
+  // refresh the due list every 10 minutes while the page is open
+  setInterval(loadAll, 10 * 60e3);
+
+  loadAll();
+  setTimeout(() => log('ai', 'Online. Tap the orb or hit Talk and say "brief me".'), 300);
+})();
+</script>
+</body>
+</html>
