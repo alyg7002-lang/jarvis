@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-14T18:29:06+00:00",
+  "updated": "2026-10-15T15:52:02+00:00",
   "items": [
     {
       "id": "6629-22182760@kennesaw.view.usg.edu",
@@ -12,6 +12,13 @@
       "id": "6629-22490929@kennesaw.view.usg.edu",
       "item": "workshop six - Oral History preparation",
       "course": "American Identities",
+      "due": "2026-10-15T23:59:59-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22505254@kennesaw.view.usg.edu",
+      "item": "Pseudocode Examples",
+      "course": "MATLAB for Engrs wApplication",
       "due": "2026-10-15T23:59:59-04:00",
       "allDay": false
     },
@@ -158,6 +165,13 @@
     {
       "id": "6629-22097280@kennesaw.view.usg.edu",
       "item": "Ch 6 Quiz",
+      "course": "MATLAB for Engrs wApplication",
+      "due": "2026-11-01T23:59:59-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22097289@kennesaw.view.usg.edu",
+      "item": "Case Study Proposal (Group Assignment)",
       "course": "MATLAB for Engrs wApplication",
       "due": "2026-11-01T23:59:59-05:00",
       "allDay": false
