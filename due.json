@@ -1,13 +1,6 @@
 {
-  "updated": "2026-10-15T15:52:02+00:00",
+  "updated": "2026-10-15T21:48:17+00:00",
   "items": [
-    {
-      "id": "6629-22182760@kennesaw.view.usg.edu",
-      "item": "Attendance Quiz - Week 8 - Availability Ends",
-      "course": "Intro to Mech Engr Lab",
-      "due": "2026-10-15T16:20:00-04:00",
-      "allDay": false
-    },
     {
       "id": "6629-22490929@kennesaw.view.usg.edu",
       "item": "workshop six - Oral History preparation",
@@ -55,6 +48,13 @@
       "item": "Homework - Chapter 5, Problems 4, 10 & 15",
       "course": "Intro to Mech Engr Lab",
       "due": "2026-10-22T14:19:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22182762@kennesaw.view.usg.edu",
+      "item": "Attendance Quiz - Week 9 - Availability Ends",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-10-22T16:20:00-04:00",
       "allDay": false
     },
     {
@@ -121,8 +121,8 @@
       "allDay": false
     },
     {
-      "id": "6629-22182762@kennesaw.view.usg.edu",
-      "item": "Attendance Quiz - Week 9 - Availability Ends",
+      "id": "6629-22182764@kennesaw.view.usg.edu",
+      "item": "Attendance Quiz - Week 10 - Availability Ends",
       "course": "Intro to Mech Engr Lab",
       "due": "2026-10-29T16:20:00-04:00",
       "allDay": false
@@ -174,6 +174,13 @@
       "item": "Case Study Proposal (Group Assignment)",
       "course": "MATLAB for Engrs wApplication",
       "due": "2026-11-01T23:59:59-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22182766@kennesaw.view.usg.edu",
+      "item": "Attendance Quiz - Week 11 - Availability Ends",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-11-05T16:20:00-05:00",
       "allDay": false
     }
   ]
