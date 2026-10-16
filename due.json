@@ -1,20 +1,6 @@
 {
-  "updated": "2026-10-15T21:48:17+00:00",
+  "updated": "2026-10-16T07:03:42+00:00",
   "items": [
-    {
-      "id": "6629-22490929@kennesaw.view.usg.edu",
-      "item": "workshop six - Oral History preparation",
-      "course": "American Identities",
-      "due": "2026-10-15T23:59:59-04:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22505254@kennesaw.view.usg.edu",
-      "item": "Pseudocode Examples",
-      "course": "MATLAB for Engrs wApplication",
-      "due": "2026-10-15T23:59:59-04:00",
-      "allDay": false
-    },
     {
       "id": "6629-22163059@kennesaw.view.usg.edu",
       "item": "Present Progressive with estar",
