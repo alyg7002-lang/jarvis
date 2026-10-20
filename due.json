@@ -1,13 +1,6 @@
 {
-  "updated": "2026-10-19T07:09:30+00:00",
+  "updated": "2026-10-20T15:50:19+00:00",
   "items": [
-    {
-      "id": "6629-22097282@kennesaw.view.usg.edu",
-      "item": "Lab 4 (Group Assignment)",
-      "course": "MATLAB for Engrs wApplication",
-      "due": "2026-10-20T23:59:59-04:00",
-      "allDay": false
-    },
     {
       "id": "6629-22182739@kennesaw.view.usg.edu",
       "item": "Homework - Chapter 5, Problems 4, 10 & 15",
@@ -20,6 +13,13 @@
       "item": "Attendance Quiz - Week 9 - Availability Ends",
       "course": "Intro to Mech Engr Lab",
       "due": "2026-10-22T16:20:00-04:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22097282@kennesaw.view.usg.edu",
+      "item": "Lab 4 (Group Assignment)",
+      "course": "MATLAB for Engrs wApplication",
+      "due": "2026-10-23T23:59:59-04:00",
       "allDay": false
     },
     {
