@@ -1,0 +1,11 @@
+node_modules/
+worker/public/
+worker/.wrangler/
+.wrangler/
+__pycache__/
+*.pyc
+laptop/config.json
+laptop/watcher_state.json
+laptop/watcher.log
+worker/.dev.vars
+worker/wrangler.dev.toml

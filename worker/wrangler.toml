@@ -1,0 +1,24 @@
+# Cloudflare Worker config for the Jarvis backend.
+# The deploy workflow (.github/workflows/deploy.yml) fills in the KV id and
+# copies the website into ./public before deploying. Secrets (ANTHROPIC_API_KEY,
+# JARVIS_PASSCODE) are set by the workflow from GitHub secrets, never stored here.
+name = "jarvis"
+main = "src/index.js"
+compatibility_date = "2026-06-01"
+workers_dev = true
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "__KV_ID__"
+
+[vars]
+DATA_BASE = "https://raw.githubusercontent.com/alyg7002-lang/jarvis/main"
+ALLOWED_ORIGINS = "https://alyg7002-lang.github.io"
+BOT_REPO = "alyg7002-lang/orb-bot"
+
+[observability]
+enabled = true

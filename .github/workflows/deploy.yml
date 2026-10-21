@@ -1,0 +1,128 @@
+name: Deploy Jarvis backend
+
+# Builds and deploys the Cloudflare Worker (Jarvis's brain + memory) whenever
+# the code changes. Needs four repository secrets:
+#   CLOUDFLARE_API_TOKEN   Cloudflare token with "Edit Cloudflare Workers" permissions
+#   CLOUDFLARE_ACCOUNT_ID  your Cloudflare account id
+#   ANTHROPIC_API_KEY      your Claude API key (console.anthropic.com)
+#   JARVIS_PASSCODE        any passphrase you choose; the website asks for it once
+on:
+  push:
+    branches: [main]
+    paths:
+      - "worker/**"
+      - "shared/**"
+      - "assets/**"
+      - "index.html"
+      - "data/**"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run tests
+        run: npm test
+
+      - name: Check secrets
+        run: |
+          missing=""
+          for s in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
+            [ -z "${!s}" ] && missing="$missing $s"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets:$missing. Add them under Settings > Secrets and variables > Actions, then re-run this workflow."
+            exit 1
+          fi
+
+      - name: Install Wrangler
+        working-directory: worker
+        run: npm install --no-audit --no-fund
+
+      - name: Make sure the workers.dev subdomain exists
+        run: |
+          api=https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain
+          sub=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" $api | jq -r '.result.subdomain // empty')
+          if [ -z "$sub" ]; then
+            want="jarvis-$(echo $CLOUDFLARE_ACCOUNT_ID | cut -c1-6)"
+            curl -s -X PUT -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json" -d "{\"subdomain\":\"$want\"}" $api | jq -c '.success, .errors'
+          else
+            echo "workers.dev subdomain: $sub"
+          fi
+
+      - name: Create the storage (KV) if needed
+        id: kv
+        working-directory: worker
+        run: |
+          list() { curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/storage/kv/namespaces?per_page=100"; }
+          id=$(list | jq -r '.result[]? | select(.title=="jarvis-state") | .id' | head -1)
+          if [ -z "$id" ]; then
+            curl -s -X POST -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json" \
+              -d '{"title":"jarvis-state"}' "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/storage/kv/namespaces" | jq -c '.success, .errors'
+            id=$(list | jq -r '.result[]? | select(.title=="jarvis-state") | .id' | head -1)
+          fi
+          if [ -z "$id" ]; then echo "::error::Could not create the KV namespace. Check the Cloudflare token has Workers KV Storage: Edit."; exit 1; fi
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+          sed -i "s/__KV_ID__/$id/" wrangler.toml
+
+      - name: Build the website into the Worker
+        run: bash scripts/build-site.sh
+
+      - name: Deploy
+        id: deploy
+        working-directory: worker
+        run: |
+          npx wrangler deploy 2>&1 | tee deploy.log
+          url=$(grep -oE 'https://[a-zA-Z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed to $url"
+
+      - name: Set the Worker's secrets
+        working-directory: worker
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          JARVIS_PASSCODE: ${{ secrets.JARVIS_PASSCODE }}
+        run: |
+          [ -n "$ANTHROPIC_API_KEY" ] && printf '%s' "$ANTHROPIC_API_KEY" | npx wrangler secret put ANTHROPIC_API_KEY || echo "::warning::ANTHROPIC_API_KEY is not set yet; the brain stays offline."
+          [ -n "$JARVIS_PASSCODE" ] && printf '%s' "$JARVIS_PASSCODE" | npx wrangler secret put JARVIS_PASSCODE || echo "::warning::JARVIS_PASSCODE is not set yet; the website can't connect."
+
+      - name: Check it's alive
+        run: |
+          sleep 5
+          curl -s "${{ steps.deploy.outputs.url }}/api/health" | tee health.json
+          jq -e '.ok' health.json > /dev/null
+
+      - name: Tell the website where the backend is
+        run: |
+          url="${{ steps.deploy.outputs.url }}"
+          [ -z "$url" ] && exit 0
+          printf '{\n  "api": "%s"\n}\n' "$url" > config.json
+          if ! git diff --quiet -- config.json 2>/dev/null || ! git ls-files --error-unmatch config.json >/dev/null 2>&1; then
+            git config user.name "jarvis-bot"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add config.json
+            git commit -m "Point the website at the backend ($url)"
+            git pull --rebase -q origin main
+            git push
+          fi
+
+      - name: Summary
+        run: |
+          echo "### Jarvis is live" >> $GITHUB_STEP_SUMMARY
+          echo "Backend + website: ${{ steps.deploy.outputs.url }}" >> $GITHUB_STEP_SUMMARY
