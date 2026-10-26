@@ -1,41 +1,6 @@
 {
-  "updated": "2026-10-24T07:00:25+00:00",
+  "updated": "2026-10-26T07:10:33+00:00",
   "items": [
-    {
-      "id": "6629-22163063@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 2 Tarea 3 (2.3- 2.4)",
-      "course": "Elementary Spanish I",
-      "due": "2026-10-25T23:59:00-04:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163064@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 2 Tarea 4 (Tema II)",
-      "course": "Elementary Spanish I",
-      "due": "2026-10-25T23:59:00-04:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163065@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 2 \u2013 Repaso",
-      "course": "Elementary Spanish I",
-      "due": "2026-10-25T23:59:00-04:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163066@kennesaw.view.usg.edu",
-      "item": "Examen 2",
-      "course": "Elementary Spanish I",
-      "due": "2026-10-25T23:59:00-04:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22097283@kennesaw.view.usg.edu",
-      "item": "Ch 7 Quiz",
-      "course": "MATLAB for Engrs wApplication",
-      "due": "2026-10-25T23:59:59-04:00",
-      "allDay": false
-    },
     {
       "id": "6629-22182737@kennesaw.view.usg.edu",
       "item": "Individual Design Sketches & Description",
@@ -160,6 +125,48 @@
       "item": "Attendance Quiz - Week 12 - Availability Ends",
       "course": "Intro to Mech Engr Lab",
       "due": "2026-11-12T16:20:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163075@kennesaw.view.usg.edu",
+      "item": "Stem-Changing Verbs: e to ie",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-15T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163076@kennesaw.view.usg.edu",
+      "item": "Stem-Changing Verbs: e to i",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-15T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163077@kennesaw.view.usg.edu",
+      "item": "Stem-Changing Verbs: o to ue",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-15T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163078@kennesaw.view.usg.edu",
+      "item": "Irregular yo Forms of Present-Tense Verbs",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-15T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163079@kennesaw.view.usg.edu",
+      "item": "Ser and Estar",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-15T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22097287@kennesaw.view.usg.edu",
+      "item": "Case Study Draft",
+      "course": "MATLAB for Engrs wApplication",
+      "due": "2026-11-15T23:59:59-05:00",
       "allDay": false
     }
   ]
