@@ -1,34 +1,6 @@
 {
-  "updated": "2026-10-29T19:09:45+00:00",
+  "updated": "2026-10-29T21:57:15+00:00",
   "items": [
-    {
-      "id": "6629-22182737@kennesaw.view.usg.edu",
-      "item": "Individual Design Sketches & Description",
-      "course": "Intro to Mech Engr Lab",
-      "due": "2026-10-29T14:19:00-04:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22182738@kennesaw.view.usg.edu",
-      "item": "Team Info",
-      "course": "Intro to Mech Engr Lab",
-      "due": "2026-10-29T14:19:00-04:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22182773@kennesaw.view.usg.edu",
-      "item": "Individual Quiz on Project Requirements",
-      "course": "Intro to Mech Engr Lab",
-      "due": "2026-10-29T14:19:00-04:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22182764@kennesaw.view.usg.edu",
-      "item": "Attendance Quiz - Week 10 - Availability Ends",
-      "course": "Intro to Mech Engr Lab",
-      "due": "2026-10-29T16:20:00-04:00",
-      "allDay": false
-    },
     {
       "id": "6629-22182741@kennesaw.view.usg.edu",
       "item": "Homework - Chapter 5, Problems 4, 10 & 15 - Availability Ends",
@@ -188,6 +160,13 @@
       "item": "Homework - Chapter 6, Problems 6.5, 6.15, & 6.26",
       "course": "Intro to Mech Engr Lab",
       "due": "2026-11-19T14:19:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22182770@kennesaw.view.usg.edu",
+      "item": "Attendance Quiz - Week 13 - Availability Ends",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-11-19T16:20:00-05:00",
       "allDay": false
     }
   ]
