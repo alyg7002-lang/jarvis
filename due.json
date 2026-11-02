@@ -1,48 +1,6 @@
 {
-  "updated": "2026-11-01T21:50:28+00:00",
+  "updated": "2026-11-02T07:43:22+00:00",
   "items": [
-    {
-      "id": "6629-22163067@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 - Tema 1: los quehaceres- los aparatos- la frecuencia",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-01T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163068@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 - 3.1",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-01T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163069@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 - Expresiones con tener",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-01T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163070@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 - 3.2",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-01T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22097280@kennesaw.view.usg.edu",
-      "item": "Ch 6 Quiz",
-      "course": "MATLAB for Engrs wApplication",
-      "due": "2026-11-01T23:59:59-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22097289@kennesaw.view.usg.edu",
-      "item": "Case Study Proposal (Group Assignment)",
-      "course": "MATLAB for Engrs wApplication",
-      "due": "2026-11-01T23:59:59-05:00",
-      "allDay": false
-    },
     {
       "id": "6629-22182766@kennesaw.view.usg.edu",
       "item": "Attendance Quiz - Week 11 - Availability Ends",
@@ -160,6 +118,48 @@
       "item": "Attendance Quiz - Week 13 - Availability Ends",
       "course": "Intro to Mech Engr Lab",
       "due": "2026-11-19T16:20:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163080@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 3 - Tarea 3 (Tema II)",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-22T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163081@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 3 - Tarea 4 (3.3)",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-22T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163082@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 3 - Tarea 5 (3.4)",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-22T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163083@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 3 \u2013 Repaso",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-22T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163084@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 4 - Tarea 1 (Tema I)",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-22T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163085@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 4 - Tarea 2 (4.1)",
+      "course": "Elementary Spanish I",
+      "due": "2026-11-22T23:59:00-05:00",
       "allDay": false
     }
   ]
