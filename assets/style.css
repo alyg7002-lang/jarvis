@@ -204,6 +204,44 @@ table.t th { text-align: left; color: var(--mist); font-weight: 400; padding: 6p
 table.t td { padding: 7px 8px; border-bottom: 1px solid var(--seam); font-variant-numeric: tabular-nums; }
 .scroll-x { overflow-x: auto; }
 
+/* ---------- bot trade review ---------- */
+#reviewPlate { min-width: 0; }
+table.review td { white-space: nowrap; }
+table.review tbody tr { cursor: pointer; }
+table.review tbody tr:hover td { background: var(--hull-2); }
+table.review tbody tr.on td { background: rgba(127, 216, 255, 0.08); }
+table.review tbody tr.on td:first-child { box-shadow: inset 3px 0 0 var(--reactor); }
+#reviewChart:not(:empty) { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--seam); }
+.tchart { position: relative; touch-action: pan-y; }
+.tchart svg { display: block; width: 100%; height: auto; }
+.tc-grid { stroke: var(--seam); stroke-width: 1; }
+.tc-day { stroke: var(--seam-2); stroke-dasharray: 3 3; }
+.tc-axis { fill: var(--fog); font: 11px var(--body); font-variant-numeric: tabular-nums; }
+.tc-up { stroke: var(--reactor); } .tc-up.fill { fill: var(--reactor); stroke: none; }
+.tc-dn { stroke: var(--alarm); } .tc-dn.fill { fill: var(--alarm); stroke: none; }
+.tc-range { fill: rgba(141, 160, 181, 0.12); stroke: rgba(141, 160, 181, 0.35); stroke-dasharray: 2 3; }
+.tc-held { fill: rgba(240, 181, 74, 0.05); }
+.tc-entry { stroke: var(--ingot); stroke-width: 1.5; }
+.tc-stop { stroke: var(--alarm); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.tc-target { stroke: #6ee7b7; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.tc-label { font: 600 12px var(--display); stroke: var(--hull); stroke-width: 3px; paint-order: stroke; }
+text.tc-entry { fill: var(--ingot); } text.tc-stop { fill: var(--alarm); } text.tc-target { fill: #6ee7b7; }
+.tc-range-l { fill: var(--mist); font-weight: 400; }
+.tc-mark-in { fill: var(--ingot); stroke: var(--abyss); stroke-width: 1.5; }
+.tc-mark-win, .tc-mark-loss { stroke: var(--abyss); stroke-width: 2; }
+.tc-mark-win { fill: #6ee7b7; } .tc-mark-loss { fill: var(--alarm); }
+.tc-path { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0.6; }
+.tc-cross { stroke: var(--mist); stroke-width: 1; }
+.tc-tip { position: absolute; top: 0; pointer-events: none; background: var(--abyss); border: 1px solid var(--seam-2); border-radius: var(--r); padding: 5px 9px; font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; z-index: 2; }
+.tc-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; }
+.tc-legend i { display: inline-block; width: 12px; height: 3px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
+.tc-legend .k-in { background: var(--ingot); } .tc-legend .k-out { background: #6ee7b7; height: 8px; width: 8px; border-radius: 50%; }
+.tc-legend .k-stop { background: var(--alarm); } .tc-legend .k-target { background: #6ee7b7; }
+.tc-legend .k-range { background: rgba(141, 160, 181, 0.35); height: 8px; }
+dl.facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px 16px; margin: 14px 0 0; }
+dl.facts dt { color: var(--mist); font-size: 13px; }
+dl.facts dd { margin: 0; font-variant-numeric: tabular-nums; }
+
 .more-links { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .more-links a { display: block; padding: 16px; border: 1px solid var(--seam); border-radius: var(--r); background: var(--hull); color: var(--ink); text-decoration: none; }
 .more-links a strong { display: block; font-family: var(--display); font-size: 17px; }

@@ -3,6 +3,7 @@ import * as J from '../shared/ops.js';
 import * as api from './api.js';
 import * as V from './voice.js';
 import { createOrb } from './orb.js';
+import * as Review from './trades.js';
 
 // ---------- helpers ----------
 const $ = id => document.getElementById(id);
@@ -408,6 +409,7 @@ $('captionMic').addEventListener('click', () => (listening ? V.stopListening() :
 $('captionClose').addEventListener('click', () => { $('caption').hidden = true; });
 $('composer').addEventListener('submit', e => { e.preventDefault(); const v = $('typed').value; $('typed').value = ''; handle(v); });
 addEventListener('keydown', e => {
+  if (Review.onKey(e)) return;
   if (e.key === 'Escape') { V.hush(); if (listening) V.stopListening(); }
   if (e.key === ' ' && e.ctrlKey) { e.preventDefault(); startListening(); }
 });
@@ -691,8 +693,10 @@ function renderTrading() {
       <p class="muted small" style="margin:0 0 10px">Runs on GitHub every weekday at about 9:20 and 3:35. Its stats live in the bot, not here.</p>
       <pre class="log" id="botLog">Loading the latest log…</pre>
     </div>
+    ${Review.html()}
   </div>`;
   loadBot();
+  Review.mount();
 }
 async function loadBot() {
   try { const b = await api.bot(); if ($('botLog')) $('botLog').textContent = b.lastLines || 'The log is empty.'; }
@@ -859,6 +863,7 @@ async function voiceCheck() {
 document.addEventListener('click', async e => {
   const say = e.target.closest('[data-say]');
   if (say) { e.preventDefault(); if (view !== 'home' && !/bible|verse|debrief|quiz/i.test(say.dataset.say)) go('home'); return handle(say.dataset.say); }
+  if (Review.onClick(e)) return;
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const id = b.dataset.id;
@@ -879,7 +884,7 @@ document.addEventListener('click', async e => {
     case 'flip': showBack = true; return renderLearn();
     case 'grade': await doOp('flash_grade', { id: reviewCard, correct: b.dataset.ok === '1' }); reviewCard = null; return renderLearn();
     case 'trade-remove': if (confirm('Delete this trade from your log?')) return doOp('trade_remove', { id }); return;
-    case 'bot-refresh': $('botLog').textContent = 'Loading…'; return loadBot();
+    case 'bot-refresh': $('botLog').textContent = 'Loading…'; await Review.load(true); Review.mount(); return loadBot();
     case 'miss-build': { const m = S.misses.find(x => x.id === id); await doOp('backlog_add', { task: `Teach Jarvis: ${m.text}`, minutes: 30, project: 'Jarvis' }); await doOp('miss_built', { id }); return toast('Added to the build queue.'); }
     case 'share': return share();
     case 'share-copy': return copy(J.shareText(D.review), 'Copied. Paste it in a text.');
