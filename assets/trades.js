@@ -169,7 +169,7 @@ async function detail() {
   box.innerHTML = `<div class="spread"><h2>${h(t.symbol)} ${h(t.direction)} · ${day(t.session_date)} <span class="muted small">${h(t.bot)} #${t.n}</span></h2>
       <span class="row"><button class="btn small" data-tr="step" data-v="-1" ${i <= 0 ? 'disabled' : ''} aria-label="Newer trade">← Newer</button><button class="btn small" data-tr="step" data-v="1" ${i < 0 || i >= shown.length - 1 ? 'disabled' : ''} aria-label="Older trade">Older →</button></span></div>
     <p class="trresult ${tone(t.pnl)}">${t.status === 'open' ? 'Still open' : `${usd(t.pnl)} · ${rr(t.r_multiple)}`}</p>
-    ${t.rules ? `<p class="trnote"><strong>Rule break.</strong> This should have closed at 3:55 on ${day(t.session_date)}, but the close-out run failed, so it was held past the close with no stop or target working. By the rule it would have closed near ${px(t.rules.exit)} for ${usd(t.rules.pnl)} (${rr(t.rules.r)}).</p>` : ''}
+    ${t.rules ? `<p class="trnote"><strong>Rule break.</strong> This should have closed at 3:55 on ${day(t.session_date)}, but the close-out run failed, so it was held past the close${t.session_date < '2026-11-04' ? ' with no stop or target working, because they expired at the bell' : ''}. By the rule it would have closed near ${px(t.rules.exit)} for ${usd(t.rules.pnl)} (${rr(t.rules.r)}).</p>` : ''}
     <div class="tchart" id="trChart"><p class="empty">Loading candles…</p></div>
     <dl class="facts" id="trFacts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${h(v)}</dd></div>`).join('')}</dl>
     <div id="trVotes"></div>
