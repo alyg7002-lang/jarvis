@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { rollup, moves, whatIf, holdText, groupBy } from '../assets/tradecalc.js';
+import { rollup, moves, whatIf, holdText, groupBy, shadowRollup } from '../assets/tradecalc.js';
 
 const bar = (clock, o, h, l, c) => ({ t: Date.parse(`2026-11-03T${clock}:00-05:00`), clock, o, h, l, c, day: '2026-11-03' });
 const long = { status: 'closed', direction: 'long', entry: 100, stop: 98, target: 103, entry_time: '2026-11-03T10:00:00-05:00', exit_time: '2026-11-03T10:03:00-05:00', exit: 103, pnl: 30, r_multiple: 1.5 };
@@ -48,6 +48,13 @@ test('whatIf: a gap through the stop fills at the open, worse than the stop', ()
 
 test('whatIf skips trades without a stop', () => {
   assert.equal(whatIf({ ...long, stop: null }, [bar('10:01', 100, 101, 99, 100)]), null);
+});
+
+test('shadowRollup scores one version and skips trades not scored yet', () => {
+  const sh = (a, b) => ({ current: { pnl: a, r: a / 100 }, full: { pnl: b, r: b / 100 } });
+  const list = [{ shadow: sh(100, 40) }, { shadow: sh(-50, -50) }, { shadow: null }];
+  assert.equal(shadowRollup(list, 'current').pnl, 50); assert.equal(shadowRollup(list, 'current').n, 2);
+  assert.equal(shadowRollup(list, 'full').pnl, -10);
 });
 
 test('holdText', () => {

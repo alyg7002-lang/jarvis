@@ -20,6 +20,13 @@ export function rollup(trades, useRules = false) {
   };
 }
 
+// The shadow test: score trades as one version of the rules would have played them. Trades we can't
+// score yet (candles not in) are left out, so every line covers the same trades.
+export function shadowRollup(trades, version) {
+  const scored = trades.filter(t => t.shadow);
+  return rollup(scored.map(t => ({ status: 'closed', pnl: t.shadow[version].pnl, r_multiple: t.shadow[version].r })));
+}
+
 export function groupBy(trades, key, useRules = false) {
   const groups = new Map();
   for (const t of trades) { const k = key(t); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(t); }

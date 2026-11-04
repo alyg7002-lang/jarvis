@@ -3,7 +3,7 @@
 //   data/paper_trades.json              written by scripts/trade_review.py after every bot run
 //   data/health.json                    written by scripts/reconcile.py (journal vs Alpaca, days each bot ran)
 //   data/charts/<SYM>_<YYYY-MM-DD>.csv  1-min candles
-import { rollup, groupBy, moves, whatIf, holdText, pnlOf, rOf } from './tradecalc.js';
+import { rollup, groupBy, moves, whatIf, holdText, pnlOf, rOf, shadowRollup } from './tradecalc.js';
 
 const RAW = 'https://raw.githubusercontent.com/alyg7002-lang/orb-bot/main/';
 const TZ = 'America/New_York';
@@ -77,10 +77,11 @@ export async function mount(root, force = false) {
     <div class="plate" id="trDetail"></div>
     <div class="plate"><div class="spread"><h2>Trade log</h2><span class="num small muted" id="trCount"></span></div>
       <div class="trfilters" id="trFilters"></div><div id="trList"></div></div>
+    <div class="plate" id="trShadow"></div>
     <div class="plate" id="trLab"></div>`;
   paint();
 }
-function paint() { board(); health(); filters(); list(); lab(); if (state.sel != null || filtered().length) detail(); }
+function paint() { board(); health(); filters(); list(); shadowPanel(); lab(); if (state.sel != null || filtered().length) detail(); }
 
 const allTrades = () => state.data.trades;
 function filtered() {
@@ -173,6 +174,7 @@ async function detail() {
     <div class="tchart" id="trChart"><p class="empty">Loading candles…</p></div>
     <dl class="facts" id="trFacts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${h(v)}</dd></div>`).join('')}</dl>
     <div id="trVotes"></div>
+    ${shadowFacts(t)}
     ${t.log?.length ? `<details class="trlog"><summary>What the bot was thinking (${t.log.length} log lines)</summary><pre class="log">${h(t.log.join('\n'))}</pre></details>` : ''}
     <details class="trlog"><summary>This bot's rules</summary><p class="small muted">${h(about.rules)} <br>Records: ${h(about.where)}.</p></details>`;
   votes(t);
@@ -202,6 +204,36 @@ function votes(t) {
   const li = v => `<li><b>${h(v.voter)}</b> ${h(v.why)}</li>`;
   el.innerHTML = `<details class="trlog"><summary>Panel vote: ${yes.length} for, ${no.length} against${abstain ? `, ${abstain} no opinion` : ''}. The panel can't block a trade.</summary>
     <div class="trvotes"><div><h3 class="good">For</h3><ul>${yes.map(li).join('') || '<li class="muted">None</li>'}</ul></div><div><h3 class="bad">Against</h3><ul>${no.map(li).join('') || '<li class="muted">None</li>'}</ul></div></div></details>`;
+}
+
+// ---------- 30-minute rule, tracked without touching any orders ----------
+const SHADOW_WORDS = { stop: 'Hits stop', target: 'Hits target', time: 'Closes at 3:55', green: 'Closes green at 30 min', even: 'Closes back at entry' };
+const SHADOW_GOAL = 30;
+function shadowTable(list) {
+  const row = (label, v) => { const s = shadowRollup(list, v); return `<tr><td>${label}</td><td>${Math.round(s.winRate * 100)}%</td><td class="${tone(s.avgR)}">${rr(s.avgR)}</td><td class="${tone(s.pnl)}">${usd(s.pnl)}</td><td>$${s.maxDD.toFixed(0)}</td></tr>`; };
+  return `<div class="scroll-x"><table class="t"><thead><tr><th>Version</th><th>Win</th><th>Avg R</th><th>P&amp;L</th><th>Drawdown</th></tr></thead><tbody>
+    ${row('Current rules', 'current')}${row('Full 30-min rule', 'full')}${row('Reds close at even only', 'reds')}</tbody></table></div>`;
+}
+function shadowPanel() {
+  const box = $id('trShadow'), start = state.data.shadow_start;
+  if (!start) { box.hidden = true; return; }
+  box.hidden = false;
+  const orb = allTrades().filter(t => t.mode === 'paper' && t.shadow);
+  const fresh = orb.filter(t => t.session_date >= start).reverse(), old = orb.filter(t => t.session_date < start).reverse();
+  const n = fresh.length, pct = Math.min(100, 100 * n / SHADOW_GOAL);
+  box.innerHTML = `<div class="spread"><h2>30-minute rule test</h2><span class="num">${n} / ${SHADOW_GOAL} trades</span></div>
+    <div class="bar" style="margin:6px 0 10px"><i style="width:${pct}%"></i></div>
+    <p class="small muted" style="margin:0 0 10px">ORB only, and no orders change. <b>Full rule:</b> at 30 minutes a trade at or above entry closes, and one below entry closes when it gets back to entry. <b>Reds only:</b> just the second half. Stop and target stay on. All three lines replay the same candles with $0.01 a share slippage each way, so they compare fairly, but they won't equal real fills.</p>
+    ${n ? shadowTable(fresh) : `<p class="empty">No new trades scored yet. Trades from ${day(start)} on count here, the morning after they close.</p>`}
+    ${n && n < SHADOW_GOAL ? `<p class="trnote"><strong>${n} of ${SHADOW_GOAL} trades.</strong> Too few to judge. Don't switch on this yet, however it looks.</p>` : ''}
+    <p class="small muted">Backtest, Oct 2023 to Oct 2026, 1,010 trades: the current rules made $8,147, the full rule $2,499, and reds only $6,168.</p>
+    ${old.length ? `<details class="trlog"><summary>The first ${old.length} trades (these don't count)</summary><p class="small muted">The rule was suggested after looking at these, so they can't confirm it.</p>${shadowTable(old)}</details>` : ''}`;
+}
+function shadowFacts(t) {
+  const sh = t.shadow;
+  if (!sh) return '';
+  const line = (label, v) => `<div><dt>${label}</dt><dd class="${tone(v.r)}">${rr(v.r)} <span class="muted small">${h(SHADOW_WORDS[v.why] || v.why)}, ${px(v.exit)} at ${tm(v.at)}</span></dd></div>`;
+  return `<details class="trlog"><summary>30-minute rule on this trade</summary><dl class="facts">${line('Current rules, replayed', sh.current)}${line('Full 30-min rule', sh.full)}${line('Reds close at even only', sh.reds)}</dl></details>`;
 }
 
 // ---------- what-if ----------
