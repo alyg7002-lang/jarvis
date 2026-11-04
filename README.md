@@ -30,6 +30,7 @@ Elijah's personal assistant. You talk to it, it talks back in a British voice, a
 | Build | Build-mode queue, 25-minute session timer, dev log ("copy for my uncle") |
 | Focus | Sleep anchors, nightly debrief, laptop distraction minutes, weekly phone log |
 | Trading | Risk calculator (MES, MNQ, M2K, MGC, MCL, ES, NQ, stocks), demo trade log toward 30–50, live ORB bot log |
+| Trades | All four paper bots: scoreboard, record check against Alpaca, every trade on a candle chart, what-if replays |
 | Learn | Spaced-repetition flashcards, voice quizzes |
 | Review | Weekly numbers, share to your accountability person, "what Jarvis couldn't do", brain cost |
 

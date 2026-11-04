@@ -25,12 +25,13 @@ const ICONS = {
   build: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
   focus: '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
   trading: '<path d="M4 19V5M4 19h16M8 15l3-4 3 2 5-6"/>',
+  trades: '<path d="M8 3v4M8 15v6M16 3v6M16 17v4"/><rect x="5.5" y="7" width="5" height="8" rx="1"/><rect x="13.5" y="9" width="5" height="8" rx="1"/>',
   learn: '<rect x="3" y="5" width="13" height="10" rx="1"/><path d="M8 19h13V9"/>',
   review: '<path d="M4 4h16v16H4z"/><path d="M8 14l2.5 2.5L16 10"/>',
   settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
   more: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
 };
-const NAV = [['home', 'Home'], ['faith', 'Faith'], ['build', 'Build'], ['focus', 'Focus'], ['trading', 'Trading'], ['learn', 'Learn'], ['review', 'Review'], ['settings', 'Settings']];
+const NAV = [['home', 'Home'], ['faith', 'Faith'], ['build', 'Build'], ['focus', 'Focus'], ['trading', 'Trading'], ['trades', 'Trades'], ['learn', 'Learn'], ['review', 'Review'], ['settings', 'Settings']];
 const TABS = [['home', 'Home'], ['faith', 'Faith'], ['build', 'Build'], ['focus', 'Focus'], ['more', 'More']];
 const navLink = ([id, label]) => `<a href="#${id}" data-nav="${id}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[id]}</svg>${label}</a>`;
 $('railLinks').innerHTML = NAV.map(navLink).join('');
@@ -41,7 +42,7 @@ function route() {
   const v = (location.hash.slice(1) || 'home').split('?')[0];
   view = NAV.some(n => n[0] === v) || v === 'more' ? v : 'home';
   document.querySelectorAll('.view').forEach(s => (s.hidden = s.id !== `view-${view}`));
-  const moreSet = ['trading', 'learn', 'review', 'settings'];
+  const moreSet = ['trading', 'trades', 'learn', 'review', 'settings'];
   document.querySelectorAll('[data-nav]').forEach(a => {
     const on = a.dataset.nav === view || (a.closest('#tabs') && a.dataset.nav === 'more' && moreSet.includes(view));
     a.toggleAttribute('aria-current', false);
@@ -466,7 +467,7 @@ async function finishSession() {
 function render() {
   if (view === 'home') renderHome();
   else if (view === 'more') renderMore();
-  else ({ faith: renderFaith, build: renderBuild, focus: renderFocus, trading: renderTrading, learn: renderLearn, review: renderReview, settings: renderSettings })[view]?.();
+  else ({ faith: renderFaith, build: renderBuild, focus: renderFocus, trading: renderTrading, trades: () => Review.mount($('view-trades')), learn: renderLearn, review: renderReview, settings: renderSettings })[view]?.();
 }
 
 function renderHome() {
@@ -690,13 +691,11 @@ function renderTrading() {
     </div>
     <div class="plate" style="grid-column:1/-1">
       <div class="spread"><h2>ORB paper bot</h2><span class="row"><button class="btn small" data-act="bot-refresh">Refresh</button><a class="btn quiet small" href="https://github.com/alyg7002-lang/orb-bot" target="_blank" rel="noopener">Open on GitHub</a></span></div>
-      <p class="muted small" style="margin:0 0 10px">Runs on GitHub every weekday at about 9:20 and 3:35. Its stats live in the bot, not here.</p>
+      <p class="muted small" style="margin:0 0 10px">Four bots run on GitHub every weekday, from about 8:00 AM and 2:45 PM ET. <a href="#trades">See every trade on a chart.</a></p>
       <pre class="log" id="botLog">Loading the latest log…</pre>
     </div>
-    ${Review.html()}
   </div>`;
   loadBot();
-  Review.mount();
 }
 async function loadBot() {
   try { const b = await api.bot(); if ($('botLog')) $('botLog').textContent = b.lastLines || 'The log is empty.'; }
@@ -772,7 +771,8 @@ const costBar = (label, v, max) => `<div style="margin:10px 0"><div class="sprea
 
 function renderMore() {
   $('view-more').innerHTML = viewHead('More', '') + `<div class="more-links">
-    <a href="#trading"><strong>Trading</strong><span>Risk math, your demo log, the ORB bot</span></a>
+    <a href="#trading"><strong>Trading</strong><span>Risk math, your demo log, the bot log</span></a>
+    <a href="#trades"><strong>Trades</strong><span>All four bots, every trade on a chart</span></a>
     <a href="#learn"><strong>Learn</strong><span>Flashcards and voice quizzes</span></a>
     <a href="#review"><strong>Review</strong><span>Your week, misses, brain cost</span></a>
     <a href="#settings"><strong>Settings</strong><span>Voice, connection, sleep times</span></a></div>`;
@@ -884,7 +884,7 @@ document.addEventListener('click', async e => {
     case 'flip': showBack = true; return renderLearn();
     case 'grade': await doOp('flash_grade', { id: reviewCard, correct: b.dataset.ok === '1' }); reviewCard = null; return renderLearn();
     case 'trade-remove': if (confirm('Delete this trade from your log?')) return doOp('trade_remove', { id }); return;
-    case 'bot-refresh': $('botLog').textContent = 'Loading…'; await Review.load(true); Review.mount(); return loadBot();
+    case 'bot-refresh': $('botLog').textContent = 'Loading…'; return loadBot();
     case 'miss-build': { const m = S.misses.find(x => x.id === id); await doOp('backlog_add', { task: `Teach Jarvis: ${m.text}`, minutes: 30, project: 'Jarvis' }); await doOp('miss_built', { id }); return toast('Added to the build queue.'); }
     case 'share': return share();
     case 'share-copy': return copy(J.shareText(D.review), 'Copied. Paste it in a text.');
@@ -892,6 +892,8 @@ document.addEventListener('click', async e => {
     case 'voice-check': return voiceCheck();
   }
 });
+
+document.addEventListener('change', e => Review.onChange(e));
 
 document.addEventListener('submit', async e => {
   const f = e.target.closest('form[data-form]');

@@ -205,7 +205,33 @@ table.t td { padding: 7px 8px; border-bottom: 1px solid var(--seam); font-varian
 .scroll-x { overflow-x: auto; }
 
 /* ---------- bot trade review ---------- */
-#reviewPlate { min-width: 0; }
+#tradesRoot { display: grid; gap: 16px; min-width: 0; }
+#tradesRoot > * { min-width: 0; }
+.trboard { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.trbot { display: flex; flex-direction: column; gap: 6px; text-align: left; padding: 14px; background: var(--hull); border: 1px solid var(--seam); border-radius: var(--r); cursor: pointer; }
+.trbot:hover { border-color: var(--seam-2); }
+.trbot.on { border-color: var(--reactor); box-shadow: inset 0 0 0 1px var(--reactor); }
+.trrules { margin: 10px 0 0; color: var(--mist); }
+.trhealth { padding: 10px 14px; border-radius: 0 var(--r) var(--r) 0; font-size: 15px; background: var(--hull); }
+.trhealth.ok { border-left: 3px solid var(--reactor); }
+.trhealth.warn { border-left: 3px solid var(--ingot); background: rgba(240, 181, 74, 0.08); }
+.trhealth summary { cursor: pointer; }
+.trissues { margin: 8px 0 0; padding-left: 18px; font-size: 14px; }
+.trissues li { margin: 3px 0; }
+.trfilters { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); margin-bottom: 12px; }
+.trresult { font: 500 22px/1.2 var(--display); margin: 0 0 8px; font-variant-numeric: tabular-nums; }
+.trnote { padding: 8px 12px; border-left: 3px solid var(--ingot); background: rgba(240, 181, 74, 0.08); border-radius: 0 var(--r) var(--r) 0; font-size: 14px; margin: 8px 0; }
+.trlog { margin-top: 10px; }
+.trlog summary { cursor: pointer; color: var(--mist); font-size: 14px; }
+.trlog pre { margin-top: 8px; }
+.trvotes { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 8px; font-size: 14px; }
+.trvotes ul { margin: 0; padding-left: 16px; }
+.trby { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin-top: 12px; }
+.tc-fvg { fill: rgba(197, 138, 249, 0.3); stroke: rgba(197, 138, 249, 0.7); stroke-width: 1; }
+.tc-break { stroke: var(--mist); stroke-width: 1; stroke-dasharray: 2 4; }
+.tc-mark-rule { fill: var(--abyss); stroke: var(--ingot); stroke-width: 2; }
+.tc-legend .k-fvg { background: rgba(197, 138, 249, 0.6); height: 8px; }
+.tc-legend .k-rule { width: 8px; height: 8px; background: var(--abyss); border: 2px solid var(--ingot); transform: rotate(45deg); border-radius: 0; }
 table.review td { white-space: nowrap; }
 table.review tbody tr { cursor: pointer; }
 table.review tbody tr:hover td { background: var(--hull-2); }
