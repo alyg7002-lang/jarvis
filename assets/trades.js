@@ -57,6 +57,7 @@ async function load() {
   try {
     state.data = JSON.parse(await getText('data/paper_trades.json'));
     state.data.trades.reverse();    // newest first
+    state.data.bots ||= Object.fromEntries([...new Set(state.data.trades.map(t => t.bot))].map(b => [b, {}]));   // GitHub can serve an older file for ~5 min
     state.err = false;
   } catch (e) { console.warn(e); state.err = true; }
   try { state.health = JSON.parse(await getText('data/health.json')); } catch { state.health = null; }
@@ -98,7 +99,7 @@ function board() {
       <span class="spread"><strong>${h(name)}</strong><span class="tag ${off ? 'hot' : ''}">${off ? `missed ${off} day${off > 1 ? 's' : ''}` : c?.last_day ? `ran ${day(c.last_day)}` : 'no runs yet'}</span></span>
       <span class="big ${tone(s.pnl)}">${s.n ? usd(s.pnl) : '—'}</span>
       <span class="small muted">${s.n ? `${s.n} closed · ${s.wins}W ${s.losses}L · ${rr(s.avgR)} avg · PF ${pf(s.pf)}` : list.length ? `${list.length} open` : 'No trades yet'}</span>
-      <span class="small muted">${h(about.where)}</span></button>`;
+      <span class="small muted">${h(about.where || '')}</span></button>`;
   }).join('')}</div>
   <label class="check trrules"><input type="checkbox" data-tr="rules" ${state.useRules ? 'checked' : ''}><span>Score late closes by the rule (flat at 3:55 on entry day), not by what the late hold happened to pay</span></label>`;
 }
