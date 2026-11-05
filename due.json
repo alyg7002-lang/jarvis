@@ -1,18 +1,11 @@
 {
-  "updated": "2026-11-02T16:17:31+00:00",
+  "updated": "2026-11-05T16:20:28+00:00",
   "items": [
     {
       "id": "6629-22182766@kennesaw.view.usg.edu",
       "item": "Attendance Quiz - Week 11 - Availability Ends",
       "course": "Intro to Mech Engr Lab",
       "due": "2026-11-05T16:20:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22097279@kennesaw.view.usg.edu",
-      "item": "Lab 5 (Group Assignment)",
-      "course": "MATLAB for Engrs wApplication",
-      "due": "2026-11-05T23:59:59-05:00",
       "allDay": false
     },
     {
@@ -48,6 +41,13 @@
       "item": "Expressions of Obligation- Preference- and Intention",
       "course": "Elementary Spanish I",
       "due": "2026-11-08T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22097279@kennesaw.view.usg.edu",
+      "item": "Lab 5 (Group Assignment)",
+      "course": "MATLAB for Engrs wApplication",
+      "due": "2026-11-10T23:59:59-05:00",
       "allDay": false
     },
     {
