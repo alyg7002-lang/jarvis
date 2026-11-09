@@ -1,41 +1,6 @@
 {
-  "updated": "2026-11-08T21:52:23+00:00",
+  "updated": "2026-11-09T07:45:32+00:00",
   "items": [
-    {
-      "id": "6629-22163071@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 - Tarea 1 (Tema 1- 3.1)",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-08T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163072@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 - Tarea 2 (3.2)",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-08T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163073@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 - Cultura",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-08T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163074@kennesaw.view.usg.edu",
-      "item": "Expressions of Obligation- Preference- and Intention",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-08T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22617280@kennesaw.view.usg.edu",
-      "item": "Ch 8 Quiz",
-      "course": "MATLAB for Engrs wApplication",
-      "due": "2026-11-08T23:59:59-05:00",
-      "allDay": false
-    },
     {
       "id": "6629-22097279@kennesaw.view.usg.edu",
       "item": "Lab 5 (Group Assignment)",
