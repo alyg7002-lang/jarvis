@@ -1,13 +1,6 @@
 {
-  "updated": "2026-11-10T19:14:52+00:00",
+  "updated": "2026-11-12T22:01:30+00:00",
   "items": [
-    {
-      "id": "6629-22182730@kennesaw.view.usg.edu",
-      "item": "3D Printing .STL Files",
-      "course": "Intro to Mech Engr Lab",
-      "due": "2026-11-12T14:19:00-05:00",
-      "allDay": false
-    },
     {
       "id": "6629-22182768@kennesaw.view.usg.edu",
       "item": "Attendance Quiz - Week 12 - Availability Ends",
@@ -139,6 +132,13 @@
       "item": "Homework - Chapter 6, Problems 6.5, 6.15, & 6.26 - Availability Ends",
       "course": "Intro to Mech Engr Lab",
       "due": "2026-11-29T14:19:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22182742@kennesaw.view.usg.edu",
+      "item": "Car Performance during Competition",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-12-03T14:19:00-05:00",
       "allDay": false
     }
   ]
