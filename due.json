@@ -1,55 +1,6 @@
 {
-  "updated": "2026-11-15T22:54:41+00:00",
+  "updated": "2026-11-16T06:41:09+00:00",
   "items": [
-    {
-      "id": "6629-22163075@kennesaw.view.usg.edu",
-      "item": "Stem-Changing Verbs: e to ie",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-15T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163076@kennesaw.view.usg.edu",
-      "item": "Stem-Changing Verbs: e to i",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-15T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163077@kennesaw.view.usg.edu",
-      "item": "Stem-Changing Verbs: o to ue",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-15T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163078@kennesaw.view.usg.edu",
-      "item": "Irregular yo Forms of Present-Tense Verbs",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-15T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163079@kennesaw.view.usg.edu",
-      "item": "Ser and Estar",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-15T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22097287@kennesaw.view.usg.edu",
-      "item": "Case Study Draft",
-      "course": "MATLAB for Engrs wApplication",
-      "due": "2026-11-15T23:59:59-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22617281@kennesaw.view.usg.edu",
-      "item": "Ch 9 Quiz",
-      "course": "MATLAB for Engrs wApplication",
-      "due": "2026-11-15T23:59:59-05:00",
-      "allDay": false
-    },
     {
       "id": "6629-22651620@kennesaw.view.usg.edu",
       "item": "Test 2",
@@ -139,6 +90,41 @@
       "item": "Car Performance during Competition",
       "course": "Intro to Mech Engr Lab",
       "due": "2026-12-03T14:19:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163086@kennesaw.view.usg.edu",
+      "item": "The Prepositions por and para",
+      "course": "Elementary Spanish I",
+      "due": "2026-12-06T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163087@kennesaw.view.usg.edu",
+      "item": "Demonstrative Adjectives and Pronouns",
+      "course": "Elementary Spanish I",
+      "due": "2026-12-06T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163089@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 4 - Tarea 3 (Tema II)",
+      "course": "Elementary Spanish I",
+      "due": "2026-12-06T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163092@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 4 - Tarea 5 (4.4)",
+      "course": "Elementary Spanish I",
+      "due": "2026-12-06T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22163093@kennesaw.view.usg.edu",
+      "item": "Cap\u00edtulo 4 \u2013 Repaso",
+      "course": "Elementary Spanish I",
+      "due": "2026-12-06T23:59:00-05:00",
       "allDay": false
     }
   ]
