@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16T06:41:09+00:00",
+  "updated": "2026-11-17T16:09:04+00:00",
   "items": [
     {
       "id": "6629-22651620@kennesaw.view.usg.edu",
@@ -125,6 +125,20 @@
       "item": "Cap\u00edtulo 4 \u2013 Repaso",
       "course": "Elementary Spanish I",
       "due": "2026-12-06T23:59:00-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22097284@kennesaw.view.usg.edu",
+      "item": "Case Study Final Submission",
+      "course": "MATLAB for Engrs wApplication",
+      "due": "2026-12-07T23:59:59-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22617282@kennesaw.view.usg.edu",
+      "item": "Ch 10 Quiz",
+      "course": "MATLAB for Engrs wApplication",
+      "due": "2026-12-07T23:59:59-05:00",
       "allDay": false
     }
   ]
