@@ -1,48 +1,6 @@
 {
-  "updated": "2026-11-22T11:35:33+00:00",
+  "updated": "2026-11-23T13:00:30+00:00",
   "items": [
-    {
-      "id": "6629-22163080@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 - Tarea 3 (Tema II)",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-22T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163081@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 - Tarea 4 (3.3)",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-22T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163082@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 - Tarea 5 (3.4)",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-22T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163083@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 3 \u2013 Repaso",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-22T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163084@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 4 - Tarea 1 (Tema I)",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-22T23:59:00-05:00",
-      "allDay": false
-    },
-    {
-      "id": "6629-22163085@kennesaw.view.usg.edu",
-      "item": "Cap\u00edtulo 4 - Tarea 2 (4.1)",
-      "course": "Elementary Spanish I",
-      "due": "2026-11-22T23:59:00-05:00",
-      "allDay": false
-    },
     {
       "id": "6629-22182748@kennesaw.view.usg.edu",
       "item": "Homework - Chapter 6, Problems 6.5, 6.15, & 6.26 - Availability Ends",
@@ -125,6 +83,13 @@
       "item": "Teammate and Self Evaluations",
       "course": "Intro to Mech Engr Lab",
       "due": "2026-12-12T23:59:59-05:00",
+      "allDay": false
+    },
+    {
+      "id": "6629-22665326@kennesaw.view.usg.edu",
+      "item": "Extra Credit - SPCEET Senior Design Expo",
+      "course": "Intro to Mech Engr Lab",
+      "due": "2026-12-13T23:59:59-05:00",
       "allDay": false
     }
   ]
